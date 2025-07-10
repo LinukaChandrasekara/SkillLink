@@ -4,794 +4,508 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SkillLink - Register</title>
+    <title>SkillLink | Register</title>
+    <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
     <style>
         :root {
-            --primary-color: #4361ee;
-            --secondary-color: #3f37c9;
-            --accent-color: #4cc9f0;
-            --success-color: #4caf50;
-            --warning-color: #ff9800;
-            --danger-color: #f44336;
-            --light-bg: #f8f9fa;
-            --dark-text: #212529;
+            --primary-color: #4e73df;
+            --secondary-color: #1cc88a;
+            --dark-color: #5a5c69;
+            --light-color: #f8f9fc;
         }
         
         body {
-            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            background-color: var(--light-color);
             min-height: 100vh;
             display: flex;
             align-items: center;
-            justify-content: center;
-            padding: 20px;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 2rem 0;
         }
         
         .register-container {
-            background-color: white;
-            border-radius: 20px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
-            overflow: hidden;
-            max-width: 1200px;
+            max-width: 800px;
             width: 100%;
+            margin: 0 auto;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+            border-radius: 0.35rem;
+            overflow: hidden;
         }
         
         .register-header {
-            background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
-            padding: 25px;
-            text-align: center;
+            background-color: var(--primary-color);
             color: white;
-        }
-        
-        .brand-logo {
-            font-size: 2.8rem;
-            font-weight: 700;
-            margin-bottom: 10px;
-        }
-        
-        .brand-logo span {
-            color: #ffd166;
+            padding: 1.5rem;
+            text-align: center;
         }
         
         .register-body {
-            padding: 40px;
-        }
-        
-        .form-section {
-            margin-bottom: 30px;
-            padding: 25px;
-            border-radius: 15px;
-            background-color: var(--light-bg);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-            border-left: 4px solid var(--primary-color);
-        }
-        
-        .section-title {
-            color: var(--primary-color);
-            font-weight: 700;
-            margin-bottom: 25px;
-            padding-bottom: 10px;
-            border-bottom: 2px dashed #dee2e6;
-            display: flex;
-            align-items: center;
-        }
-        
-        .section-title i {
-            margin-right: 10px;
-            font-size: 1.5rem;
-        }
-        
-        .account-type {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
-        
-        .account-type .form-check {
-            flex: 1;
-            min-width: 200px;
-        }
-        
-        .account-type .form-check-input {
-            display: none;
-        }
-        
-        .account-type .form-check-label {
-            display: block;
-            padding: 20px;
-            border: 2px solid #dee2e6;
-            border-radius: 12px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            height: 100%;
-        }
-        
-        .account-type .form-check-input:checked + .form-check-label {
-            border-color: var(--primary-color);
-            background-color: rgba(67, 97, 238, 0.05);
-            transform: translateY(-5px);
-            box-shadow: 0 8px 15px rgba(67, 97, 238, 0.15);
-        }
-        
-        .account-type .form-check-label i {
-            font-size: 2.5rem;
-            display: block;
-            margin-bottom: 15px;
-            color: var(--primary-color);
-        }
-        
-        .account-type .form-check-label h5 {
-            font-weight: 700;
-            margin-bottom: 5px;
-            color: var(--dark-text);
-        }
-        
-        .account-type .form-check-label p {
-            color: #6c757d;
-            margin-bottom: 0;
-            font-size: 0.9rem;
-        }
-        
-        .form-group {
-            margin-bottom: 20px;
-        }
-        
-        .form-label {
-            font-weight: 600;
-            margin-bottom: 8px;
-            color: var(--dark-text);
-            display: flex;
-            align-items: center;
-        }
-        
-        .form-label .required {
-            color: var(--danger-color);
-            margin-left: 5px;
-        }
-        
-        .input-icon {
-            position: absolute;
-            left: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--primary-color);
-            z-index: 10;
-        }
-        
-        .form-control {
-            padding-left: 45px;
-            border-radius: 10px;
-            height: 50px;
-            border: 2px solid #dee2e6;
-            transition: all 0.3s ease;
+            background-color: white;
+            padding: 2rem;
         }
         
         .form-control:focus {
-            box-shadow: 0 0 0 0.25rem rgba(67, 97, 238, 0.25);
             border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.25rem rgba(78, 115, 223, 0.25);
         }
         
-        .input-group-text {
-            background-color: var(--light-bg);
-            border-radius: 10px 0 0 10px;
-            border: 2px solid #dee2e6;
-            border-right: none;
-        }
-        
-        .photo-upload {
-            border: 2px dashed #dee2e6;
-            border-radius: 15px;
-            padding: 25px;
-            text-align: center;
-            background-color: rgba(67, 97, 238, 0.03);
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-        
-        .photo-upload:hover {
-            border-color: var(--primary-color);
-            background-color: rgba(67, 97, 238, 0.08);
-        }
-        
-        .photo-upload i {
-            font-size: 3rem;
-            color: var(--primary-color);
-            margin-bottom: 15px;
-        }
-        
-        .photo-upload h5 {
-            color: var(--primary-color);
-            font-weight: 700;
-            margin-bottom: 10px;
-        }
-        
-        .photo-preview {
-            width: 150px;
-            height: 150px;
-            border-radius: 50%;
-            object-fit: cover;
-            display: none;
-            margin: 0 auto;
-            border: 3px solid var(--primary-color);
-        }
-        
-        .btn-submit {
-            background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
-            border: none;
-            padding: 15px 30px;
-            font-size: 1.1rem;
-            font-weight: 700;
-            border-radius: 50px;
-            transition: all 0.3s ease;
-            display: block;
-            margin: 30px auto 0;
-            width: 250px;
-        }
-        
-        .btn-submit:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 20px rgba(67, 97, 238, 0.3);
-        }
-        
-        .form-note {
-            background-color: #e3f2fd;
-            border-left: 4px solid var(--primary-color);
-            padding: 15px;
-            border-radius: 8px;
-            margin-top: 20px;
-        }
-        
-        .form-note i {
-            color: var(--primary-color);
-            margin-right: 10px;
-        }
-        
-        .progress-container {
-            margin: 30px 0;
-        }
-        
-        .progress {
-            height: 12px;
-            border-radius: 6px;
-            margin-bottom: 10px;
-        }
-        
-        .progress-bar {
-            background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
-        }
-        
-        .step-indicator {
-            display: flex;
-            justify-content: space-between;
-            position: relative;
-        }
-        
-        .step {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background-color: #dee2e6;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            color: #6c757d;
-            position: relative;
-            z-index: 2;
-        }
-        
-        .step.active {
+        .btn-primary {
             background-color: var(--primary-color);
-            color: white;
+            border-color: var(--primary-color);
         }
         
-        .step-label {
-            position: absolute;
-            top: 45px;
-            font-size: 0.85rem;
-            color: #6c757d;
-            white-space: nowrap;
-            text-align: center;
-            width: 100px;
-            left: 50%;
-            transform: translateX(-50%);
+        .btn-primary:hover {
+            background-color: #2e59d9;
+            border-color: #2653d4;
         }
         
-        .step-indicator::before {
-            content: '';
-            position: absolute;
-            top: 20px;
-            left: 0;
-            width: 100%;
-            height: 4px;
-            background-color: #dee2e6;
-            z-index: 1;
+        .nav-tabs .nav-link {
+            color: var(--dark-color);
+        }
+        
+        .nav-tabs .nav-link.active {
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+        
+        .preview-image {
+            max-width: 150px;
+            max-height: 150px;
+            border-radius: 0.25rem;
+            margin-top: 0.5rem;
+            display: none;
+        }
+        
+        .required-field::after {
+            content: " *";
+            color: red;
         }
         
         @media (max-width: 768px) {
-            .register-body {
-                padding: 20px;
+            .register-container {
+                margin: 1rem;
             }
-            
-            .account-type .form-check {
-                min-width: 100%;
-            }
-            
-            .form-section {
-                padding: 20px;
-            }
-        }
-        
-        .worker-fields, .business-fields {
-            display: none;
-        }
-        
-        .animated-field {
-            animation: fadeIn 0.5s ease;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .password-container {
-            position: relative;
-        }
-        
-        .password-toggle {
-            position: absolute;
-            right: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            cursor: pointer;
-            color: #6c757d;
-            z-index: 10;
         }
     </style>
 </head>
 <body>
-    <div class="register-container">
-        <div class="register-header">
-            <div class="brand-logo">Skill<span>Link</span></div>
-            <p class="lead">Join our platform to find opportunities or skilled workers in your area</p>
-        </div>
-        
-        <div class="register-body">
-            <div class="progress-container">
-                <div class="progress">
-                    <div class="progress-bar" role="progressbar" style="width: 33%;" aria-valuenow="33" aria-valuemin="0" aria-valuemax="100"></div>
-                </div>
-                <div class="step-indicator">
-                    <div class="step active">1</div>
-                    <div class="step">2</div>
-                    <div class="step">3</div>
-                </div>
+    <div class="container">
+        <div class="register-container">
+            <!-- Header Section -->
+            <div class="register-header">
+                <h2><i class="fas fa-hands-helping me-2"></i> SkillLink</h2>
+                <p class="mb-0">Join our community of skilled workers and clients</p>
             </div>
             
-            <form action="register" method="POST" enctype="multipart/form-data">
-                <div class="form-section">
-                    <h3 class="section-title"><i class="bi bi-person-badge"></i> Account Type</h3>
-                    
-                    <div class="account-type">
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" name="accountType" id="individual" value="individual" checked>
-                            <label class="form-check-label" for="individual">
-                                <i class="bi bi-person"></i>
-                                <h5>Individual Client</h5>
-                                <p>Looking for services as an individual</p>
-                            </label>
-                        </div>
-                        
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" name="accountType" id="business" value="business">
-                            <label class="form-check-label" for="business">
-                                <i class="bi bi-building"></i>
-                                <h5>Business Client</h5>
-                                <p>Company or organization seeking services</p>
-                            </label>
-                        </div>
-                        
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" name="accountType" id="worker" value="worker">
-                            <label class="form-check-label" for="worker">
-                                <i class="bi bi-tools"></i>
-                                <h5>Worker</h5>
-                                <p>Provide services as a skilled professional</p>
-                            </label>
-                        </div>
-                        
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" name="accountType" id="admin" value="admin">
-                            <label class="form-check-label" for="admin">
-                                <i class="bi bi-shield-lock"></i>
-                                <h5>Administrator</h5>
-                                <p>Platform manager and moderator</p>
-                            </label>
-                        </div>
+            <!-- Body Section -->
+            <div class="register-body">
+                <!-- Error/Success Messages -->
+                <% if (request.getParameter("error") != null) { %>
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <i class="fas fa-exclamation-circle me-2"></i> <%= request.getParameter("error") %>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
-                    
-                    <div class="form-note">
-                        <i class="bi bi-info-circle"></i>
-                        <strong>Note:</strong> All accounts require ID verification after registration. 
-                        Administrators will review your information before granting full access.
-                    </div>
-                </div>
+                <% } %>
                 
-                <div class="form-section">
-                    <h3 class="section-title"><i class="bi bi-person-lines-fill"></i> Personal Information</h3>
-                    
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label class="form-label">Full Name <span class="required">*</span></label>
-                                <div class="position-relative">
-                                    <i class="bi bi-person input-icon"></i>
-                                    <input type="text" class="form-control" name="fullName" placeholder="Enter your full name" required>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label class="form-label">National ID Number <span class="required">*</span></label>
-                                <div class="position-relative">
-                                    <i class="bi bi-credit-card input-icon"></i>
-                                    <input type="text" class="form-control" name="nationalId" placeholder="Enter your ID number" required>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label class="form-label">Email Address <span class="required">*</span></label>
-                                <div class="position-relative">
-                                    <i class="bi bi-envelope input-icon"></i>
-                                    <input type="email" class="form-control" name="email" placeholder="Enter your email" required>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label class="form-label">Phone Number <span class="required">*</span></label>
-                                <div class="position-relative">
-                                    <i class="bi bi-telephone input-icon"></i>
-                                    <input type="tel" class="form-control" name="phone" placeholder="Enter your phone number" required>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label class="form-label">Password <span class="required">*</span></label>
-                                <div class="position-relative">
-                                    <i class="bi bi-lock input-icon"></i>
-                                    <input type="password" class="form-control" id="password" name="password" placeholder="Create a password" required>
-                                    <span class="password-toggle" id="togglePassword">
-                                        <i class="bi bi-eye"></i>
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label class="form-label">Confirm Password <span class="required">*</span></label>
-                                <div class="position-relative">
-                                    <i class="bi bi-lock input-icon"></i>
-                                    <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" placeholder="Confirm your password" required>
-                                    <span class="password-toggle" id="toggleConfirmPassword">
-                                        <i class="bi bi-eye"></i>
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label class="form-label">Age <span class="required">*</span></label>
-                                <div class="position-relative">
-                                    <i class="bi bi-calendar input-icon"></i>
-                                    <input type="number" class="form-control" name="age" placeholder="Enter your age" min="18" max="100" required>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label class="form-label">Location <span class="required">*</span></label>
-                                <div class="position-relative">
-                                    <i class="bi bi-geo-alt input-icon"></i>
-                                    <input type="text" class="form-control" name="location" placeholder="Enter your location" required>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <!-- Registration Type Tabs -->
+                <ul class="nav nav-tabs nav-justified mb-4" id="registerTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="worker-tab" data-bs-toggle="tab" 
+                                data-bs-target="#worker-form" type="button" role="tab">
+                            <i class="fas fa-tools me-2"></i>Register as Worker
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="client-tab" data-bs-toggle="tab" 
+                                data-bs-target="#client-form" type="button" role="tab">
+                            <i class="fas fa-user-tie me-2"></i>Register as Client
+                        </button>
+                    </li>
+                </ul>
                 
-                <div class="form-section">
-                    <h3 class="section-title"><i class="bi bi-card-image"></i> Photo Upload</h3>
-                    
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="photo-upload" id="profileUpload">
-                                <i class="bi bi-person-square"></i>
-                                <h5>Upload Profile Photo</h5>
-                                <p>Click to upload or drag & drop</p>
-                                <p class="small text-muted">JPG or PNG, Max 2MB</p>
-                                <input type="file" id="profilePhoto" name="profilePhoto" accept="image/*" class="d-none">
-                                <img id="profilePreview" class="photo-preview" alt="Profile preview">
-                            </div>
-                        </div>
-                        
-                        <div class="col-md-6">
-                            <div class="photo-upload" id="idUpload">
-                                <i class="bi bi-person-badge"></i>
-                                <h5>Upload ID Photo</h5>
-                                <p>Click to upload or drag & drop</p>
-                                <p class="small text-muted">JPG or PNG, Max 3MB</p>
-                                <input type="file" id="idPhoto" name="idPhoto" accept="image/*" class="d-none">
-                                <img id="idPreview" class="photo-preview" alt="ID preview">
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="form-note mt-4">
-                        <i class="bi bi-shield-check"></i>
-                        <strong>Security Note:</strong> Your ID photo is required for verification purposes only. 
-                        It will be securely stored and only accessible to administrators.
-                    </div>
-                </div>
-                
-                <div class="form-section business-fields">
-                    <h3 class="section-title"><i class="bi bi-building"></i> Business Information</h3>
-                    
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label class="form-label">Business Name <span class="required">*</span></label>
-                                <div class="position-relative">
-                                    <i class="bi bi-building input-icon"></i>
-                                    <input type="text" class="form-control" name="businessName" placeholder="Enter business name">
+                <!-- Tab Content -->
+                <div class="tab-content" id="registerTabsContent">
+                    <!-- Worker Registration Form -->
+                    <div class="tab-pane fade show active" id="worker-form" role="tabpanel">
+                        <form action="${pageContext.request.contextPath}/auth/register" method="post" enctype="multipart/form-data">
+                            <input type="hidden" name="userType" value="worker">
+                            
+                            <h5 class="mb-4"><i class="fas fa-user-circle me-2"></i>Basic Information</h5>
+                            <div class="row g-3 mb-4">
+                                <div class="col-md-6">
+                                    <label for="w-fullName" class="form-label required-field">Full Name</label>
+                                    <input type="text" class="form-control" id="w-fullName" name="fullName" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="w-idNumber" class="form-label required-field">ID Number</label>
+                                    <input type="text" class="form-control" id="w-idNumber" name="idNumber" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="w-email" class="form-label required-field">Email</label>
+                                    <input type="email" class="form-control" id="w-email" name="email" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="w-phone" class="form-label required-field">Phone Number</label>
+                                    <input type="tel" class="form-control" id="w-phone" name="phone" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="w-age" class="form-label required-field">Age</label>
+                                    <input type="number" class="form-control" id="w-age" name="age" min="18" max="99" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="w-location" class="form-label required-field">Location</label>
+                                    <input type="text" class="form-control" id="w-location" name="location" required>
                                 </div>
                             </div>
-                        </div>
-                        
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label class="form-label">Business Type</label>
-                                <div class="position-relative">
-                                    <i class="bi bi-diagram-3 input-icon"></i>
-                                    <select class="form-control" name="businessType">
-                                        <option value="">Select business type</option>
-                                        <option value="retail">Retail</option>
-                                        <option value="service">Service Provider</option>
-                                        <option value="manufacturing">Manufacturing</option>
-                                        <option value="hospitality">Hospitality</option>
-                                        <option value="education">Education</option>
-                                        <option value="other">Other</option>
+                            
+                            <h5 class="mb-4"><i class="fas fa-briefcase me-2"></i>Work Details</h5>
+                            <div class="row g-3 mb-4">
+                                <div class="col-md-6">
+                                    <label for="w-jobCategory" class="form-label required-field">Job Category</label>
+                                    <select class="form-select" id="w-jobCategory" name="jobCategory" required>
+                                        <option value="" selected disabled>Select your category</option>
+                                        <option value="Electrician">Electrician</option>
+                                        <option value="Plumber">Plumber</option>
+                                        <option value="Carpenter">Carpenter</option>
+                                        <option value="Cleaner">Cleaner</option>
+                                        <option value="Tutor">Tutor</option>
+                                        <option value="Driver">Driver</option>
+                                        <option value="Other">Other</option>
                                     </select>
                                 </div>
+                                <div class="col-md-6">
+                                    <label for="w-experience" class="form-label required-field">Experience (Years)</label>
+                                    <input type="number" class="form-control" id="w-experience" name="experienceYears" min="0" max="50" required>
+                                </div>
+                                <div class="col-12">
+                                    <label for="w-description" class="form-label required-field">Description</label>
+                                    <textarea class="form-control" id="w-description" name="description" rows="3" required></textarea>
+                                    <small class="text-muted">Tell us about your skills and experience</small>
+                                </div>
                             </div>
-                        </div>
-                        
-                        <div class="col-md-12">
-                            <div class="form-group">
-                                <label class="form-label">Business Description</label>
-                                <textarea class="form-control" name="businessDescription" rows="3" placeholder="Briefly describe your business"></textarea>
+                            
+                            <h5 class="mb-4"><i class="fas fa-lock me-2"></i>Account Security</h5>
+                            <div class="row g-3 mb-4">
+                                <div class="col-md-6">
+                                    <label for="w-username" class="form-label required-field">Username</label>
+                                    <input type="text" class="form-control" id="w-username" name="username" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="w-password" class="form-label required-field">Password</label>
+                                    <div class="input-group">
+                                        <input type="password" class="form-control" id="w-password" name="password" required>
+                                        <button class="btn btn-outline-secondary" type="button" id="w-togglePassword">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </div>
+                                    <div class="password-strength mt-2">
+                                        <div class="progress" style="height: 5px;">
+                                            <div class="progress-bar" role="progressbar" style="width: 0%"></div>
+                                        </div>
+                                        <small class="text-muted">Password strength: <span id="w-strength-text">Weak</span></small>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="w-confirmPassword" class="form-label required-field">Confirm Password</label>
+                                    <input type="password" class="form-control" id="w-confirmPassword" required>
+                                    <div class="invalid-feedback" id="w-password-match-feedback">
+                                        Passwords do not match
+                                    </div>
+                                </div>
                             </div>
-                        </div>
+                            
+                            <h5 class="mb-4"><i class="fas fa-id-card me-2"></i>Verification Documents</h5>
+                            <div class="row g-3 mb-4">
+                                <div class="col-md-6">
+                                    <label for="w-profilePicture" class="form-label required-field">Profile Picture</label>
+                                    <input type="file" class="form-control" id="w-profilePicture" name="profilePicture" accept="image/*" required>
+                                    <img id="w-profilePreview" class="preview-image" alt="Profile preview">
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="w-idProof" class="form-label required-field">ID Proof (Photo)</label>
+                                    <input type="file" class="form-control" id="w-idProof" name="idProof" accept="image/*" required>
+                                    <img id="w-idPreview" class="preview-image" alt="ID preview">
+                                    <small class="text-muted">Upload a clear photo of your government-issued ID</small>
+                                </div>
+                            </div>
+                            
+                            <div class="form-check mb-4">
+                                <input class="form-check-input" type="checkbox" id="w-terms" required>
+                                <label class="form-check-label" for="w-terms">
+                                    I agree to the <a href="#" class="text-decoration-none">Terms of Service</a> and 
+                                    <a href="#" class="text-decoration-none">Privacy Policy</a>
+                                </label>
+                            </div>
+                            
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-primary py-2">
+                                    <i class="fas fa-user-plus me-2"></i>Register as Worker
+                                </button>
+                            </div>
+                        </form>
                     </div>
-                </div>
-                
-                <div class="form-section worker-fields">
-                    <h3 class="section-title"><i class="bi bi-tools"></i> Worker Information</h3>
                     
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label class="form-label">Job Category <span class="required">*</span></label>
-                                <div class="position-relative">
-                                    <i class="bi bi-briefcase input-icon"></i>
-                                    <select class="form-control" name="jobCategory">
-                                        <option value="">Select your category</option>
-                                        <option value="electrician">Electrician</option>
-                                        <option value="plumber">Plumber</option>
-                                        <option value="carpenter">Carpenter</option>
-                                        <option value="cleaner">Cleaner</option>
-                                        <option value="tutor">Tutor</option>
-                                        <option value="driver">Driver</option>
-                                        <option value="mechanic">Mechanic</option>
-                                        <option value="gardener">Gardener</option>
-                                        <option value="painter">Painter</option>
-                                        <option value="other">Other</option>
-                                    </select>
+                    <!-- Client Registration Form -->
+                    <div class="tab-pane fade" id="client-form" role="tabpanel">
+                        <form action="${pageContext.request.contextPath}/auth/register" method="post" enctype="multipart/form-data">
+                            <input type="hidden" name="userType" value="client">
+                            
+                            <h5 class="mb-4"><i class="fas fa-user-circle me-2"></i>Basic Information</h5>
+                            <div class="row g-3 mb-4">
+                                <div class="col-md-6">
+                                    <label for="c-fullName" class="form-label required-field">Full Name</label>
+                                    <input type="text" class="form-control" id="c-fullName" name="fullName" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="c-idNumber" class="form-label required-field">ID Number</label>
+                                    <input type="text" class="form-control" id="c-idNumber" name="idNumber" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="c-email" class="form-label required-field">Email</label>
+                                    <input type="email" class="form-control" id="c-email" name="email" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="c-phone" class="form-label required-field">Phone Number</label>
+                                    <input type="tel" class="form-control" id="c-phone" name="phone" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="c-age" class="form-label required-field">Age</label>
+                                    <input type="number" class="form-control" id="c-age" name="age" min="18" max="99" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="c-location" class="form-label required-field">Location</label>
+                                    <input type="text" class="form-control" id="c-location" name="location" required>
                                 </div>
                             </div>
-                        </div>
-                        
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label class="form-label">Years of Experience <span class="required">*</span></label>
-                                <div class="position-relative">
-                                    <i class="bi bi-award input-icon"></i>
-                                    <select class="form-control" name="experience">
-                                        <option value="">Select experience</option>
-                                        <option value="0">Less than 1 year</option>
-                                        <option value="1">1-2 years</option>
-                                        <option value="3">3-5 years</option>
-                                        <option value="6">6-10 years</option>
-                                        <option value="11">More than 10 years</option>
-                                    </select>
+                            
+                            <h5 class="mb-4"><i class="fas fa-building me-2"></i>Client Type</h5>
+                            <div class="row g-3 mb-4">
+                                <div class="col-12">
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="clientType" id="individual" value="individual" checked>
+                                        <label class="form-check-label" for="individual">Individual</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="clientType" id="business" value="business">
+                                        <label class="form-check-label" for="business">Business</label>
+                                    </div>
+                                </div>
+                                <div class="col-12" id="businessFields" style="display: none;">
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <label for="c-businessName" class="form-label">Business Name</label>
+                                            <input type="text" class="form-control" id="c-businessName" name="businessName">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="c-businessAddress" class="form-label">Business Address</label>
+                                            <input type="text" class="form-control" id="c-businessAddress" name="businessAddress">
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        
-                        <div class="col-md-12">
-                            <div class="form-group">
-                                <label class="form-label">Professional Description <span class="required">*</span></label>
-                                <textarea class="form-control" name="description" rows="4" placeholder="Describe your skills, experience, and services you offer"></textarea>
-                            </div>
-                        </div>
-                        
-                        <div class="col-md-12">
-                            <div class="form-group">
-                                <label class="form-label">Hourly Rate (Optional)</label>
-                                <div class="input-group">
-                                    <span class="input-group-text">$</span>
-                                    <input type="number" class="form-control" name="hourlyRate" placeholder="Enter your hourly rate">
-                                    <span class="input-group-text">per hour</span>
+                            
+                            <h5 class="mb-4"><i class="fas fa-lock me-2"></i>Account Security</h5>
+                            <div class="row g-3 mb-4">
+                                <div class="col-md-6">
+                                    <label for="c-username" class="form-label required-field">Username</label>
+                                    <input type="text" class="form-control" id="c-username" name="username" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="c-password" class="form-label required-field">Password</label>
+                                    <div class="input-group">
+                                        <input type="password" class="form-control" id="c-password" name="password" required>
+                                        <button class="btn btn-outline-secondary" type="button" id="c-togglePassword">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </div>
+                                    <div class="password-strength mt-2">
+                                        <div class="progress" style="height: 5px;">
+                                            <div class="progress-bar" role="progressbar" style="width: 0%"></div>
+                                        </div>
+                                        <small class="text-muted">Password strength: <span id="c-strength-text">Weak</span></small>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="c-confirmPassword" class="form-label required-field">Confirm Password</label>
+                                    <input type="password" class="form-control" id="c-confirmPassword" required>
+                                    <div class="invalid-feedback" id="c-password-match-feedback">
+                                        Passwords do not match
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                            
+                            <h5 class="mb-4"><i class="fas fa-id-card me-2"></i>Verification Documents</h5>
+                            <div class="row g-3 mb-4">
+                                <div class="col-md-6">
+                                    <label for="c-profilePicture" class="form-label required-field">Profile Picture</label>
+                                    <input type="file" class="form-control" id="c-profilePicture" name="profilePicture" accept="image/*" required>
+                                    <img id="c-profilePreview" class="preview-image" alt="Profile preview">
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="c-idProof" class="form-label required-field">ID Proof (Photo)</label>
+                                    <input type="file" class="form-control" id="c-idProof" name="idProof" accept="image/*" required>
+                                    <img id="c-idPreview" class="preview-image" alt="ID preview">
+                                    <small class="text-muted">Upload a clear photo of your government-issued ID</small>
+                                </div>
+                            </div>
+                            
+                            <div class="form-check mb-4">
+                                <input class="form-check-input" type="checkbox" id="c-terms" required>
+                                <label class="form-check-label" for="c-terms">
+                                    I agree to the <a href="#" class="text-decoration-none">Terms of Service</a> and 
+                                    <a href="#" class="text-decoration-none">Privacy Policy</a>
+                                </label>
+                            </div>
+                            
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-primary py-2">
+                                    <i class="fas fa-user-plus me-2"></i>Register as Client
+                                </button>
+                            </div>
+                        </form>
                     </div>
                 </div>
                 
-                <div class="form-check mb-4">
-                    <input class="form-check-input" type="checkbox" id="terms" required>
-                    <label class="form-check-label" for="terms">
-                        I agree to the <a href="#" class="text-decoration-none">Terms of Service</a> and <a href="#" class="text-decoration-none">Privacy Policy</a>
-                    </label>
+                <!-- Login Link -->
+                <div class="text-center mt-4">
+                    <p>Already have an account? <a href="login.jsp" class="text-decoration-none">Login here</a></p>
                 </div>
-                
-                <button type="submit" class="btn btn-submit">Create Account</button>
-            </form>
+            </div>
         </div>
     </div>
 
+    <!-- Bootstrap Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom JavaScript -->
     <script>
-        // Toggle password visibility
-        const togglePassword = document.querySelector('#togglePassword');
-        const password = document.querySelector('#password');
-        
-        togglePassword.addEventListener('click', function() {
-            const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
-            password.setAttribute('type', type);
-            this.innerHTML = type === 'password' ? '<i class="bi bi-eye"></i>' : '<i class="bi bi-eye-slash"></i>';
-        });
-        
-        const toggleConfirmPassword = document.querySelector('#toggleConfirmPassword');
-        const confirmPassword = document.querySelector('#confirmPassword');
-        
-        toggleConfirmPassword.addEventListener('click', function() {
-            const type = confirmPassword.getAttribute('type') === 'password' ? 'text' : 'password';
-            confirmPassword.setAttribute('type', type);
-            this.innerHTML = type === 'password' ? '<i class="bi bi-eye"></i>' : '<i class="bi bi-eye-slash"></i>';
-        });
-        
-        // Account type selection
-        const accountTypeRadios = document.querySelectorAll('input[name="accountType"]');
-        const businessFields = document.querySelector('.business-fields');
-        const workerFields = document.querySelector('.worker-fields');
-        
-        accountTypeRadios.forEach(radio => {
-            radio.addEventListener('change', function() {
-                if (this.value === 'business') {
-                    businessFields.style.display = 'block';
-                    workerFields.style.display = 'none';
-                } else if (this.value === 'worker') {
-                    workerFields.style.display = 'block';
-                    businessFields.style.display = 'none';
-                } else {
-                    businessFields.style.display = 'none';
-                    workerFields.style.display = 'none';
-                }
+        // Toggle password visibility for both forms
+        document.querySelectorAll('[id$="togglePassword"]').forEach(button => {
+            button.addEventListener('click', function() {
+                const formPrefix = this.id.split('-')[0];
+                const passwordInput = document.getElementById(`${formPrefix}-password`);
+                const icon = this.querySelector('i');
                 
-                // Add animation to newly shown fields
-                if (businessFields.style.display === 'block') {
-                    businessFields.classList.add('animated-field');
-                } else if (workerFields.style.display === 'block') {
-                    workerFields.classList.add('animated-field');
+                if (passwordInput.type === 'password') {
+                    passwordInput.type = 'text';
+                    icon.classList.remove('fa-eye');
+                    icon.classList.add('fa-eye-slash');
+                } else {
+                    passwordInput.type = 'password';
+                    icon.classList.remove('fa-eye-slash');
+                    icon.classList.add('fa-eye');
                 }
             });
         });
         
-        // Photo upload functionality
-        const profileUpload = document.getElementById('profileUpload');
-        const profileInput = document.getElementById('profilePhoto');
-        const profilePreview = document.getElementById('profilePreview');
-        
-        profileUpload.addEventListener('click', function() {
-            profileInput.click();
-        });
-        
-        profileInput.addEventListener('change', function() {
-            if (this.files && this.files[0]) {
-                const reader = new FileReader();
+        // Password strength indicator for both forms
+        document.querySelectorAll('[id$="password"]').forEach(input => {
+            input.addEventListener('input', function() {
+                const formPrefix = this.id.split('-')[0];
+                const strengthBar = document.querySelector(`#${formPrefix}-password`).parentElement.nextElementSibling.querySelector('.progress-bar');
+                const strengthText = document.getElementById(`${formPrefix}-strength-text`);
+                const password = this.value;
+                let strength = 0;
                 
-                reader.onload = function(e) {
-                    profilePreview.src = e.target.result;
-                    profilePreview.style.display = 'block';
-                    profileUpload.querySelector('p').style.display = 'none';
+                // Length check
+                if (password.length >= 8) strength += 25;
+                if (password.length >= 12) strength += 25;
+                
+                // Complexity checks
+                if (/[A-Z]/.test(password)) strength += 15;
+                if (/[0-9]/.test(password)) strength += 15;
+                if (/[^A-Za-z0-9]/.test(password)) strength += 20;
+                
+                // Update UI
+                strengthBar.style.width = `${strength}%`;
+                
+                if (strength < 50) {
+                    strengthBar.className = 'progress-bar bg-danger';
+                    strengthText.textContent = 'Weak';
+                } else if (strength < 75) {
+                    strengthBar.className = 'progress-bar bg-warning';
+                    strengthText.textContent = 'Moderate';
+                } else {
+                    strengthBar.className = 'progress-bar bg-success';
+                    strengthText.textContent = 'Strong';
                 }
-                
-                reader.readAsDataURL(this.files[0]);
-            }
+            });
         });
         
-        const idUpload = document.getElementById('idUpload');
-        const idInput = document.getElementById('idPhoto');
-        const idPreview = document.getElementById('idPreview');
-        
-        idUpload.addEventListener('click', function() {
-            idInput.click();
-        });
-        
-        idInput.addEventListener('change', function() {
-            if (this.files && this.files[0]) {
-                const reader = new FileReader();
+        // Password confirmation validation for both forms
+        document.querySelectorAll('[id$="confirmPassword"]').forEach(input => {
+            input.addEventListener('input', function() {
+                const formPrefix = this.id.split('-')[0];
+                const password = document.getElementById(`${formPrefix}-password`).value;
+                const confirmPassword = this.value;
+                const feedback = document.getElementById(`${formPrefix}-password-match-feedback`);
                 
-                reader.onload = function(e) {
-                    idPreview.src = e.target.result;
-                    idPreview.style.display = 'block';
-                    idUpload.querySelector('p').style.display = 'none';
+                if (confirmPassword && password !== confirmPassword) {
+                    this.classList.add('is-invalid');
+                    feedback.style.display = 'block';
+                } else {
+                    this.classList.remove('is-invalid');
+                    feedback.style.display = 'none';
                 }
-                
-                reader.readAsDataURL(this.files[0]);
-            }
+            });
         });
         
-        // Form validation
-        document.querySelector('form').addEventListener('submit', function(e) {
-            const password = document.getElementById('password').value;
-            const confirmPassword = document.getElementById('confirmPassword').value;
-            
-            if (password !== confirmPassword) {
-                e.preventDefault();
-                alert('Passwords do not match!');
-                return false;
-            }
-            
-            const accountType = document.querySelector('input[name="accountType"]:checked').value;
-            const profilePhoto = document.getElementById('profilePhoto').files.length;
-            const idPhoto = document.getElementById('idPhoto').files.length;
-            
-            if (!profilePhoto || !idPhoto) {
-                e.preventDefault();
-                alert('Please upload both profile photo and ID photo!');
-                return false;
-            }
-            
-            if (accountType === 'worker') {
-                const jobCategory = document.querySelector('select[name="jobCategory"]').value;
-                const experience = document.querySelector('select[name="experience"]').value;
-                const description = document.querySelector('textarea[name="description"]').value;
+        // Image preview for both forms
+        document.querySelectorAll('input[type="file"]').forEach(input => {
+            input.addEventListener('change', function() {
+                const formPrefix = this.id.split('-')[0];
+                const fieldType = this.id.split('-')[1];
+                const preview = document.getElementById(`${formPrefix}-${fieldType}Preview`);
                 
-                if (!jobCategory || !experience || !description) {
+                if (this.files && this.files[0]) {
+                    const reader = new FileReader();
+                    
+                    reader.onload = function(e) {
+                        preview.src = e.target.result;
+                        preview.style.display = 'block';
+                    }
+                    
+                    reader.readAsDataURL(this.files[0]);
+                }
+            });
+        });
+        
+        // Show/hide business fields based on client type selection
+        document.querySelectorAll('input[name="clientType"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                const businessFields = document.getElementById('businessFields');
+                if (this.value === 'business') {
+                    businessFields.style.display = 'block';
+                    document.getElementById('c-businessName').required = true;
+                    document.getElementById('c-businessAddress').required = true;
+                } else {
+                    businessFields.style.display = 'none';
+                    document.getElementById('c-businessName').required = false;
+                    document.getElementById('c-businessAddress').required = false;
+                }
+            });
+        });
+        
+        // Form validation before submission
+        document.querySelectorAll('form').forEach(form => {
+            form.addEventListener('submit', function(e) {
+                const formPrefix = this.querySelector('[id$="confirmPassword"]').id.split('-')[0];
+                const password = document.getElementById(`${formPrefix}-password`).value;
+                const confirmPassword = document.getElementById(`${formPrefix}-confirmPassword`).value;
+                
+                if (password !== confirmPassword) {
                     e.preventDefault();
-                    alert('Please fill all required worker information!');
-                    return false;
+                    document.getElementById(`${formPrefix}-confirmPassword`).classList.add('is-invalid');
+                    document.getElementById(`${formPrefix}-password-match-feedback`).style.display = 'block';
+                    document.getElementById(`${formPrefix}-confirmPassword`).scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'center'
+                    });
                 }
-            }
-            
-            return true;
+            });
         });
     </script>
 </body>
