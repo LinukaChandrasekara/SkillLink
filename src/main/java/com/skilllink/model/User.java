@@ -1,65 +1,117 @@
 package com.skilllink.model;
 
-import java.sql.Timestamp;
+import java.time.Instant;
 
 public class User {
-    private int userId;
-    private String username;
-    private String password;
-    private String email;
+	private long userId;
+    private int roleId;
+    private String fullName;
+    private String nid;
     private String phone;
-    private String userType; // "admin", "worker", "client"
-    private String clientType; // "individual", "business" (nullable)
-    private boolean isVerified;
-    private Timestamp createdAt;
-    private Timestamp lastLogin;
-    private String profilePicture;
-    private String idProof;
+    private String email;
+    private short age;
+    private String addressLine;
+    private String username;
+    private String passwordHash;
+    private String bio;
+    private byte[] profilePicture;
+    private String verificationStatus; // unverified/pending/verified/denied
+    private boolean active;
+    private Instant createdAt;
+    
+    
+    public long getUserId() {
+		return userId;
+	}
+	public void setUserId(long userId) {
+		this.userId = userId;
+	}
+	public int getRoleId() {
+		return roleId;
+	}
+	public void setRoleId(int roleId) {
+		this.roleId = roleId;
+	}
+	public String getFullName() {
+		return fullName;
+	}
+	public void setFullName(String fullName) {
+		this.fullName = fullName;
+	}
+	public String getNid() {
+		return nid;
+	}
+	public void setNid(String nid) {
+		this.nid = nid;
+	}
+	public String getPhone() {
+		return phone;
+	}
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
+	public String getEmail() {
+		return email;
+	}
+	public void setEmail(String email) {
+		this.email = email;
+	}
+	public short getAge() {
+		return age;
+	}
+	public void setAge(short age) {
+		this.age = age;
+	}
+	public String getAddressLine() {
+		return addressLine;
+	}
+	public void setAddressLine(String addressLine) {
+		this.addressLine = addressLine;
+	}
+	public String getUsername() {
+		return username;
+	}
+	public void setUsername(String username) {
+		this.username = username;
+	}
+	public String getPasswordHash() {
+		return passwordHash;
+	}
+	public void setPasswordHash(String passwordHash) {
+		this.passwordHash = passwordHash;
+	}
+	public String getBio() {
+		return bio;
+	}
+	public void setBio(String bio) {
+		this.bio = bio;
+	}
+	public byte[] getProfilePicture() {
+		return profilePicture;
+	}
+	public void setProfilePicture(byte[] profilePicture) {
+		this.profilePicture = profilePicture;
+	}
+	public String getVerificationStatus() {
+		return verificationStatus;
+	}
+	public void setVerificationStatus(String verificationStatus) {
+		this.verificationStatus = verificationStatus;
+	}
+	public boolean isActive() {
+		return active;
+	}
+	public void setActive(boolean active) {
+		this.active = active;
+	}
+	public Instant getCreatedAt() {
+		return createdAt;
+	}
+	public void setCreatedAt(Instant createdAt) {
+		this.createdAt = createdAt;
+	}
 
-    // Constructors
-    public User() {}
 
-    public User(int userId, String username, String password, String email, String phone, 
-                String userType, String clientType, boolean isVerified, Timestamp createdAt, 
-                Timestamp lastLogin, String profilePicture, String idProof) {
-        this.userId = userId;
-        this.username = username;
-        this.password = password;
-        this.email = email;
-        this.phone = phone;
-        this.userType = userType;
-        this.clientType = clientType;
-        this.isVerified = isVerified;
-        this.createdAt = createdAt;
-        this.lastLogin = lastLogin;
-        this.profilePicture = profilePicture;
-        this.idProof = idProof;
-    }
-
-    // Getters and Setters
-    public int getUserId() { return userId; }
-    public void setUserId(int userId) { this.userId = userId; }
-    public String getUsername() { return username; }
-    public void setUsername(String username) { this.username = username; }
-    public String getPassword() { return password; }
-    public void setPassword(String password) { this.password = password; }
-    public String getEmail() { return email; }
-    public void setEmail(String email) { this.email = email; }
-    public String getPhone() { return phone; }
-    public void setPhone(String phone) { this.phone = phone; }
-    public String getUserType() { return userType; }
-    public void setUserType(String userType) { this.userType = userType; }
-    public String getClientType() { return clientType; }
-    public void setClientType(String clientType) { this.clientType = clientType; }
-    public boolean isVerified() { return isVerified; }
-    public void setVerified(boolean isVerified) { this.isVerified = isVerified; }
-    public Timestamp getCreatedAt() { return createdAt; }
-    public void setCreatedAt(Timestamp createdAt) { this.createdAt = createdAt; }
-    public Timestamp getLastLogin() { return lastLogin; }
-    public void setLastLogin(Timestamp lastLogin) { this.lastLogin = lastLogin; }
-    public String getProfilePicture() { return profilePicture; }
-    public void setProfilePicture(String profilePicture) { this.profilePicture = profilePicture; }
-    public String getIdProof() { return idProof; }
-    public void setIdProof(String idProof) { this.idProof = idProof; }
-
+    // getters + setters omitted for brevity
+    // ... generate with IDE
 }
