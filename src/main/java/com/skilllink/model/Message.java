@@ -13,7 +13,7 @@ public class Message implements Serializable {
     private Long senderId;
     private String body;
     private byte[] attachmentBlob;
-    private LocalDateTime createdAt;
+    private String createdAt;
     private boolean read;
 
     public Message() {}
@@ -28,8 +28,8 @@ public class Message implements Serializable {
     public void setBody(String body) { this.body = body; }
     public byte[] getAttachmentBlob() { return attachmentBlob; }
     public void setAttachmentBlob(byte[] attachmentBlob) { this.attachmentBlob = attachmentBlob; }
-    public LocalDateTime getCreatedAt() { return createdAt; }
-    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+    public String getCreatedAt() { return createdAt; }
+    public void setCreatedAt(String string) { this.createdAt = string; }
     public boolean isRead() { return read; }
     public void setRead(boolean read) { this.read = read; }
 

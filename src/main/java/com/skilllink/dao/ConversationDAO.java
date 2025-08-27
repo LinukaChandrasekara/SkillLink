@@ -1,13 +1,18 @@
+// src/main/java/com/skilllink/dao/ConversationDAO.java
 package com.skilllink.dao;
 
-import com.skilllink.model.Conversation;
-
+import com.skilllink.dao.dto.ConversationSummary;
 import java.util.List;
 
 public interface ConversationDAO {
-    long create(Long createdBy, Long jobId, boolean group);
-    Conversation findById(long conversationId);
-    List<Conversation> listForUser(long userId, int limit, int offset);
-    boolean addParticipant(long conversationId, long userId);
-    List<Long> listParticipants(long conversationId);
+    List<ConversationSummary> listForUser(long userId);
+
+    Long findDirectConversation(long userId1, long userId2);
+
+    long create(long createdBy, Long jobId, boolean isGroup);
+
+    void addParticipant(long conversationId, long userId);
+
+    long findOtherParticipant(long conversationId, long currentUserId);
 }
+	

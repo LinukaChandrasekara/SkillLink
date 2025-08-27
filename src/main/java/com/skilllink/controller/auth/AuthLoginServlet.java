@@ -74,11 +74,11 @@ public class AuthLoginServlet extends HttpServlet {
         // Redirect per role
         String target;
         if (u.getRoleName() == RoleName.ADMIN) {
-            target = "/views/admin/dashboard.jsp";
+            target = "/admin/dashboard";
         } else if (u.getRoleName() == RoleName.WORKER) {
-            target = "/views/worker/dashboard.jsp";
+            target = "/worker/dashboard"; // Also use servlet here if you have one
         } else {
-            target = "/views/client/dashboard.jsp";
+            target = "/client/dashboard"; // Same note here
         }
         resp.sendRedirect(req.getContextPath() + target);
     }

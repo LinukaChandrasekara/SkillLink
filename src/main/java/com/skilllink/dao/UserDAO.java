@@ -4,15 +4,19 @@ import com.skilllink.model.User;
 import com.skilllink.model.enums.VerificationStatus;
 import com.skilllink.dao.dto.PagedResult;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface UserDAO {
     long countAll();
     long countByRole(String roleName);
     long countByVerification(String status);
+    long countByRoleAndVerification(String roleName, String status);
     long countDisabled();
 
     Optional<User> findById(long userId);
+    List<User> listRecentNonAdmin(int limit);
+
     Optional<User> findByUsernameOrEmail(String login);
 
     /** List users for Admin → Manage Users with filters + pagination. roleName: admin/worker/client; verification: verified/pending/unverified/denied */

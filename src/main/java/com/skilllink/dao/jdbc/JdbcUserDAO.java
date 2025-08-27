@@ -58,19 +58,33 @@ public class JdbcUserDAO implements UserDAO {
             return rs.next() ? rs.getLong(1) : 0L;
         } catch (SQLException e) { throw new RuntimeException(e); }
     }
-
     @Override
-    public Optional<User> findById(long userId) {
+    public Optional findById(long userId) {
         final String sql =
-            "SELECT u.*, r.role_name FROM users u JOIN roles r ON r.role_id=u.role_id WHERE u.user_id=?";
-        try (Connection c = DB.getConnection();
-             PreparedStatement ps = c.prepareStatement(sql)) {
+            "SELECT u.user_id, u.full_name, u.username, r.role_name " +
+            "FROM users u JOIN roles r ON r.role_id=u.role_id WHERE u.user_id=?";
+        try (Connection con = DB.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setLong(1, userId);
             try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) return Optional.of(map(rs));
+                if (!rs.next()) return null;
+                User u = new User();
+                u.setUserId(rs.getLong("user_id"));
+                u.setFullName(rs.getString("full_name"));
+                u.setUsername(rs.getString("username"));
+                u.setRoleName(RoleName.fromDb(rs.getString("role_name")));
                 return Optional.empty();
             }
         } catch (SQLException e) { throw new RuntimeException(e); }
+    }
+
+    @Override
+    public long countByRoleAndVerification(String roleName, String status) {
+        final String sql = "SELECT COUNT(*) FROM users u JOIN roles r ON r.role_id=u.role_id WHERE r.role_name=? AND u.verification_status=?";
+        try (var c = DB.getConnection(); var ps = c.prepareStatement(sql)) {
+            ps.setString(1, roleName); ps.setString(2, status);
+            try (var rs = ps.executeQuery()) { return rs.next()? rs.getLong(1):0L; }
+        } catch (java.sql.SQLException e) { throw new RuntimeException(e); }
     }
 
     @Override
@@ -87,6 +101,30 @@ public class JdbcUserDAO implements UserDAO {
                 return Optional.empty();
             }
         } catch (SQLException e) { throw new RuntimeException(e); }
+    }
+    @Override
+    public List<User> listRecentNonAdmin(int limit) {
+        final String sql =
+            "SELECT u.user_id, u.full_name, u.username, r.role_name " +
+            "FROM users u JOIN roles r ON r.role_id=u.role_id " +
+            "WHERE r.role_name IN ('worker','client') " +
+            "ORDER BY u.updated_at DESC LIMIT ?";
+        List<User> out = new ArrayList<>();
+        try (Connection con = DB.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, Math.max(1, limit));
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    User u = new User();
+                    u.setUserId(rs.getLong("user_id"));
+                    u.setFullName(rs.getString("full_name"));
+                    u.setUsername(rs.getString("username"));
+                    u.setRoleName(RoleName.fromDb(rs.getString("role_name")));
+                    out.add(u);
+                }
+            }
+        } catch (SQLException e) { throw new RuntimeException(e); }
+        return out;
     }
 
     @Override
