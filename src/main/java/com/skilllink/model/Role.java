@@ -1,16 +1,27 @@
 package com.skilllink.model;
 
-public enum Role {
-    ADMIN(1, "admin"),
-    WORKER(2, "worker"),
-    CLIENT(3, "client");
+import com.skilllink.model.enums.RoleName;
+import java.io.Serializable;
 
-    public final int id;
-    public final String name;
-    Role(int id, String name) { this.id = id; this.name = name; }
+public class Role implements Serializable {
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private Integer roleId;       // TINYINT UNSIGNED
+    private RoleName roleName;
 
-    public static Role fromId(int id) {
-        for (Role r : values()) if (r.id == id) return r;
-        return null;
+    public Role() {}
+    public Role(Integer roleId, RoleName roleName) {
+        this.roleId = roleId;
+        this.roleName = roleName;
+    }
+    public Integer getRoleId() { return roleId; }
+    public void setRoleId(Integer roleId) { this.roleId = roleId; }
+    public RoleName getRoleName() { return roleName; }
+    public void setRoleName(RoleName roleName) { this.roleName = roleName; }
+
+    @Override public String toString() {
+        return "Role{roleId=" + roleId + ", roleName=" + roleName + '}';
     }
 }

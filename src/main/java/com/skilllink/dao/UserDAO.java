@@ -1,12 +1,29 @@
 package com.skilllink.dao;
 
 import com.skilllink.model.User;
+import com.skilllink.model.enums.VerificationStatus;
+import com.skilllink.dao.dto.PagedResult;
 
-public interface UserDao {
-    boolean existsByUsernameOrEmail(String username, String email) throws Exception;
-    User findByUsernameOrEmail(String usernameOrEmail) throws Exception;
-    long insertUser(User user) throws Exception;
-    void insertWorker(long userId, int categoryId, int experience) throws Exception;
-    void insertClient(long userId, String clientType) throws Exception;
-    void insertVerificationSubmission(long userId, byte[] idPhoto) throws Exception;
+import java.util.Optional;
+
+public interface UserDAO {
+    long countAll();
+    long countByRole(String roleName);
+    long countByVerification(String status);
+    long countDisabled();
+
+    Optional<User> findById(long userId);
+    Optional<User> findByUsernameOrEmail(String login);
+
+    /** List users for Admin → Manage Users with filters + pagination. roleName: admin/worker/client; verification: verified/pending/unverified/denied */
+    PagedResult<User> list(String q, String roleName, String verification, int page, int pageSize);
+
+    long create(User u);
+    boolean update(User u);
+    boolean setVerificationStatus(long userId, VerificationStatus status);
+    boolean setActive(long userId, boolean active);
+    boolean delete(long userId);
+
+    byte[] getProfilePicture(long userId);
+    boolean updateProfilePicture(long userId, byte[] pic);
 }
