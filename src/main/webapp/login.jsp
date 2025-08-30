@@ -51,6 +51,7 @@
             box-shadow: 0 0 0 0.25rem rgba(78, 115, 223, 0.25);
         }
         
+        
         .btn-primary {
             background-color: var(--primary-color);
             border-color: var(--primary-color);

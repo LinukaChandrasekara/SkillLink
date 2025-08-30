@@ -13,6 +13,20 @@ import java.util.List;
 import java.util.Optional;
 
 public class JdbcUserDAO implements UserDAO {
+	
+	// com.skilllink.dao.jdbc.JdbcUserDAO
+	@Override
+	public String getVerificationStatus(long userId) {
+	    final String sql = "SELECT verification_status FROM users WHERE user_id=?";
+	    try (Connection c = DB.getConnection(); PreparedStatement ps = c.prepareStatement(sql)) {
+	        ps.setLong(1, userId);
+	        try (ResultSet rs = ps.executeQuery()) {
+	            if (rs.next()) return rs.getString(1); // "unverified","pending","verified","denied"
+	        }
+	    } catch (SQLException e) { throw new RuntimeException(e); }
+	    return null;
+	}
+
 
     @Override
     public long countAll() {
@@ -59,24 +73,25 @@ public class JdbcUserDAO implements UserDAO {
         } catch (SQLException e) { throw new RuntimeException(e); }
     }
     @Override
-    public Optional findById(long userId) {
+    public Optional<User> findById(long userId) {
         final String sql =
-            "SELECT u.user_id, u.full_name, u.username, r.role_name " +
-            "FROM users u JOIN roles r ON r.role_id=u.role_id WHERE u.user_id=?";
-        try (Connection con = DB.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
+            "SELECT u.*, r.role_name " +
+            "FROM users u JOIN roles r ON r.role_id=u.role_id " +
+            "WHERE u.user_id=?";
+        try (Connection c = DB.getConnection();
+             PreparedStatement ps = c.prepareStatement(sql)) {
             ps.setLong(1, userId);
             try (ResultSet rs = ps.executeQuery()) {
-                if (!rs.next()) return null;
-                User u = new User();
-                u.setUserId(rs.getLong("user_id"));
-                u.setFullName(rs.getString("full_name"));
-                u.setUsername(rs.getString("username"));
-                u.setRoleName(RoleName.fromDb(rs.getString("role_name")));
+                if (rs.next()) {
+                    return Optional.of(map(rs));  // map(..) -> builds full User
+                }
                 return Optional.empty();
             }
-        } catch (SQLException e) { throw new RuntimeException(e); }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
+
 
     @Override
     public long countByRoleAndVerification(String roleName, String status) {

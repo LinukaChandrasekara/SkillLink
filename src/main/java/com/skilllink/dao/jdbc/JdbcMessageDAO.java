@@ -5,6 +5,7 @@ import com.skilllink.dao.MessageDAO;
 import com.skilllink.model.Message;
 
 import java.sql.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,7 +30,10 @@ public class JdbcMessageDAO implements MessageDAO {
                     m.setConversationId(rs.getLong("conversation_id"));
                     m.setSenderId(rs.getLong("sender_id"));
                     m.setBody(rs.getString("body"));
-                    m.setCreatedAt(rs.getTimestamp("created_at").toString());
+
+                    Timestamp ts = rs.getTimestamp("created_at");
+                    m.setCreatedAt(ts != null ? ts.toLocalDateTime() : (LocalDateTime) null);
+
                     m.setRead(rs.getBoolean("is_read"));
                     list.add(m);
                 }
@@ -53,8 +57,7 @@ public class JdbcMessageDAO implements MessageDAO {
             else ps.setBytes(4, attachment);
             ps.executeUpdate();
             try (ResultSet rs = ps.getGeneratedKeys()) {
-                rs.next();
-                return rs.getLong(1);
+                return rs.next() ? rs.getLong(1) : 0L;
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);

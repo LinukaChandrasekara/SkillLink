@@ -18,7 +18,12 @@ import java.sql.PreparedStatement;
 @WebServlet(name="AdminVerificationDecideServlet", urlPatterns={"/admin/verifications/decide"})
 public class AdminVerificationDecideServlet extends HttpServlet {
 
-    @Override
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	@Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         HttpSession s = req.getSession(false);
         User me = (s==null)?null:(User) s.getAttribute("authUser");

@@ -23,6 +23,88 @@ public class JdbcJobPostDAO implements JobPostDAO {
     }
 
     @Override
+    public List<JobPost> listByClient(long clientId) {
+        final String sql = """
+            SELECT j.*, c.name AS job_category_name, u.full_name AS client_name
+              FROM job_posts j
+              JOIN job_categories c ON c.job_category_id = j.job_category_id
+              JOIN users u          ON u.user_id        = j.client_id
+             WHERE j.client_id = ?
+             ORDER BY j.created_at DESC
+        """;
+        List<JobPost> out = new ArrayList<>();
+        try (Connection c = DB.getConnection(); PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setLong(1, clientId);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) out.add(map(rs));
+            }
+        } catch (SQLException e) { throw new RuntimeException(e); }
+        return out;
+    }
+
+    @Override
+    public long create(JobPost j) {
+        final String sql = """
+            INSERT INTO job_posts
+              (client_id, job_category_id, title, description, budget_amount, location_text, status)
+            VALUES
+              (?,?,?,?,?,?,'pending')
+        """;
+        try (Connection c = DB.getConnection();
+             PreparedStatement ps = c.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            ps.setLong(1, j.getClientId());
+            ps.setLong(2, j.getJobCategoryId());
+            ps.setString(3, j.getTitle());
+            ps.setString(4, j.getDescription());
+            ps.setBigDecimal(5, j.getBudgetAmount());
+            ps.setString(6, j.getLocationText());
+            ps.executeUpdate();
+            try (ResultSet rs = ps.getGeneratedKeys()) {
+                return rs.next() ? rs.getLong(1) : 0L;
+            }
+        } catch (SQLException e) { throw new RuntimeException(e); }
+    }
+
+    @Override
+    public boolean updateByClientRepend(JobPost j) {
+        final String sql = """
+            UPDATE job_posts
+               SET title=?,
+                   description=?,
+                   budget_amount=?,
+                   location_text=?,
+                   job_category_id=?,
+                   status='pending',
+                   reviewed_at=NULL,
+                   reviewer_admin_id=NULL
+             WHERE job_id=? AND client_id=? AND status IN ('pending','denied')
+        """;
+        try (Connection c = DB.getConnection(); PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setString(1, j.getTitle());
+            ps.setString(2, j.getDescription());
+            ps.setBigDecimal(3, j.getBudgetAmount());
+            ps.setString(4, j.getLocationText());
+            ps.setLong(5, j.getJobCategoryId());
+            ps.setLong(6, j.getJobId());
+            ps.setLong(7, j.getClientId());
+            return ps.executeUpdate() == 1;
+        } catch (SQLException e) { throw new RuntimeException(e); }
+    }
+
+    @Override
+    public boolean deleteByClientIfEditable(long jobId, long clientId) {
+        final String sql = """
+            DELETE FROM job_posts
+             WHERE job_id=? AND client_id=? AND status IN ('pending','denied')
+        """;
+        try (Connection c = DB.getConnection(); PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setLong(1, jobId);
+            ps.setLong(2, clientId);
+            return ps.executeUpdate() == 1;
+        } catch (SQLException e) { throw new RuntimeException(e); }
+    }
+
+    @Override
     public PagedResult<JobPost> list(String q, JobStatus status, int page, int pageSize) {
         page = Math.max(1, page);
         pageSize = Math.min(Math.max(5, pageSize), 100);
@@ -93,20 +175,23 @@ public class JdbcJobPostDAO implements JobPostDAO {
         } catch (SQLException e) { throw new RuntimeException(e); }
     }
 
+    // ------------- helpers -------------
+
     private static void bind(PreparedStatement ps, List<Object> params) throws SQLException {
         for (int i=0;i<params.size();i++) ps.setObject(i+1, params.get(i));
     }
+
     private static JobPost map(ResultSet rs) throws SQLException {
         JobPost j = new JobPost();
         j.setJobId(rs.getLong("job_id"));
         j.setClientId(rs.getLong("client_id"));
-        j.setJobCategoryId(rs.getLong("job_category_id"));
+        j.setJobCategoryId((int) rs.getLong("job_category_id"));
         j.setTitle(rs.getString("title"));
         j.setDescription(rs.getString("description"));
         j.setBudgetAmount(rs.getBigDecimal("budget_amount"));
         j.setLocationText(rs.getString("location_text"));
         j.setStatus(com.skilllink.model.enums.JobStatus.fromDb(rs.getString("status")));
-        j.setReviewerAdminId((Long)rs.getObject("reviewer_admin_id"));
+        j.setReviewerAdminId((Long) rs.getObject("reviewer_admin_id"));
         Timestamp t = rs.getTimestamp("reviewed_at"); if (t!=null) j.setReviewedAt(t.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
         Timestamp c = rs.getTimestamp("created_at"); if (c!=null) j.setCreatedAt(c.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
         Timestamp u = rs.getTimestamp("updated_at"); if (u!=null) j.setUpdatedAt(u.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());

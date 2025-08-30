@@ -55,7 +55,8 @@ public class AuthLoginServlet extends HttpServlet {
         // Login OK → session
         HttpSession session = req.getSession(true);
         session.setAttribute("authUser", u);
-        session.setAttribute("roleName", u.getRoleName());
+        session.setAttribute("roleName", u.getRoleName().name());
+
 
         // Lightweight “remember me” (username only; not auto-login token)
         if (remember) {

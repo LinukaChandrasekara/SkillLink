@@ -18,26 +18,71 @@ import java.util.List;
 
 @WebServlet(name="AdminJobsServlet", urlPatterns={"/admin/jobs"})
 public class AdminJobsServlet extends HttpServlet {
+    private static final long serialVersionUID = 1L;
 
-    /**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-
-	// --- DTOs for the view ---
+    // --- DTOs for the view (must have getters for EL/JSTL) ---
     public static class PendingCard {
-        public long jobId, clientId;
-        public String title, description, categoryName, clientName, locationText;
-        public String budgetAmount; // keep as string for easy print
+        private long jobId;
+        private long clientId;
+        private String title;
+        private String description;
+        private String categoryName;
+        private String clientName;
+        private String locationText;
+        private String budgetAmount; // kept as String for easy print
+
+        public long getJobId() { return jobId; }
+        public void setJobId(long jobId) { this.jobId = jobId; }
+
+        public long getClientId() { return clientId; }
+        public void setClientId(long clientId) { this.clientId = clientId; }
+
+        public String getTitle() { return title; }
+        public void setTitle(String title) { this.title = title; }
+
+        public String getDescription() { return description; }
+        public void setDescription(String description) { this.description = description; }
+
+        public String getCategoryName() { return categoryName; }
+        public void setCategoryName(String categoryName) { this.categoryName = categoryName; }
+
+        public String getClientName() { return clientName; }
+        public void setClientName(String clientName) { this.clientName = clientName; }
+
+        public String getLocationText() { return locationText; }
+        public void setLocationText(String locationText) { this.locationText = locationText; }
+
+        public String getBudgetAmount() { return budgetAmount; }
+        public void setBudgetAmount(String budgetAmount) { this.budgetAmount = budgetAmount; }
     }
+
     public static class ApprovedRow {
-        public String title, clientName, categoryName, budgetAmount, approvedOn;
+        private String title;
+        private String clientName;
+        private String categoryName;
+        private String budgetAmount;
+        private String approvedOn;
+
+        public String getTitle() { return title; }
+        public void setTitle(String title) { this.title = title; }
+
+        public String getClientName() { return clientName; }
+        public void setClientName(String clientName) { this.clientName = clientName; }
+
+        public String getCategoryName() { return categoryName; }
+        public void setCategoryName(String categoryName) { this.categoryName = categoryName; }
+
+        public String getBudgetAmount() { return budgetAmount; }
+        public void setBudgetAmount(String budgetAmount) { this.budgetAmount = budgetAmount; }
+
+        public String getApprovedOn() { return approvedOn; }
+        public void setApprovedOn(String approvedOn) { this.approvedOn = approvedOn; }
     }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         HttpSession s = req.getSession(false);
-        User me = (s==null)?null:(User) s.getAttribute("authUser");
+        User me = (s==null)? null : (User) s.getAttribute("authUser");
         if (me==null || me.getRoleName()!= RoleName.ADMIN) {
             resp.sendRedirect(req.getContextPath()+"/login.jsp?error=Please%20login%20as%20an%20administrator");
             return;
@@ -66,17 +111,19 @@ public class AdminJobsServlet extends HttpServlet {
              ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
                 PendingCard p = new PendingCard();
-                p.jobId = rs.getLong("job_id");
-                p.clientId = rs.getLong("client_id");
-                p.title = rs.getString("title");
-                p.description = rs.getString("description");
-                p.locationText = rs.getString("location_text");
-                p.categoryName = rs.getString("category_name");
-                p.clientName = rs.getString("client_name");
-                p.budgetAmount = rs.getBigDecimal("budget_amount").toPlainString();
+                p.setJobId(rs.getLong("job_id"));
+                p.setClientId(rs.getLong("client_id"));
+                p.setTitle(rs.getString("title"));
+                p.setDescription(rs.getString("description"));
+                p.setLocationText(rs.getString("location_text"));
+                p.setCategoryName(rs.getString("category_name"));
+                p.setClientName(rs.getString("client_name"));
+                p.setBudgetAmount(rs.getBigDecimal("budget_amount").toPlainString());
                 list.add(p);
             }
-        } catch (SQLException e) { throw new RuntimeException(e); }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
         return list;
     }
 
@@ -95,15 +142,17 @@ public class AdminJobsServlet extends HttpServlet {
              ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
                 ApprovedRow a = new ApprovedRow();
-                a.title = rs.getString("title");
-                a.clientName = rs.getString("client_name");
-                a.categoryName = rs.getString("category_name");
-                a.budgetAmount = rs.getBigDecimal("budget_amount").toPlainString();
+                a.setTitle(rs.getString("title"));
+                a.setClientName(rs.getString("client_name"));
+                a.setCategoryName(rs.getString("category_name"));
+                a.setBudgetAmount(rs.getBigDecimal("budget_amount").toPlainString());
                 Timestamp t = rs.getTimestamp("reviewed_at");
-                a.approvedOn = (t==null ? "-" : t.toString());
+                a.setApprovedOn(t == null ? "-" : t.toString());
                 out.add(a);
             }
-        } catch (SQLException e) { throw new RuntimeException(e); }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
         return out;
     }
 
@@ -114,6 +163,9 @@ public class AdminJobsServlet extends HttpServlet {
             try (ResultSet rs = ps.executeQuery()) {
                 return rs.next()? rs.getLong(1) : 0L;
             }
-        } catch (SQLException e) { throw new RuntimeException(e); }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
+

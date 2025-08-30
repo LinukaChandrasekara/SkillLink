@@ -13,6 +13,9 @@ public interface UserDAO {
     long countByVerification(String status);
     long countByRoleAndVerification(String roleName, String status);
     long countDisabled();
+ // com.skilllink.dao.UserDAO
+    String getVerificationStatus(long userId);
+
 
     Optional<User> findById(long userId);
     List<User> listRecentNonAdmin(int limit);

@@ -129,40 +129,48 @@
         </div>
 
         <!-- Right: thread -->
-        <div class="col-12 col-lg-8">
-          <div class="rounded-outer p-3 right-pane">
-            <div class="d-flex align-items-center gap-2 mb-2">
-              <img class="avatar"
-                   src="${pageContext.request.contextPath}/media/user/profile?userId=${otherUser.userId}" alt="">
-              <div>
-                <div class="fw-semibold"><c:out value="${otherUser.fullName}"/></div>
-                <div class="small-muted">${otherUser.roleName}</div>
-              </div>
-            </div>
+		<div class="col-12 col-lg-8">
+		  <div class="rounded-outer p-3 right-pane">
+		
+		    <!-- Header -->
+		    <div class="d-flex align-items-center gap-2 mb-2">
+		      <c:if test="${not empty otherUser}">
+		        <img class="avatar" src="${pageContext.request.contextPath}/media/user/profile?userId=${otherUser.userId}" alt="">
+		        <div>
+		          <div class="fw-semibold"><c:out value="${otherUser.fullName}"/></div>
+		          <div class="small-muted">${otherUser.roleName}</div>
+		        </div>
+		      </c:if>
+		    </div>
+		
+		    <!-- Chat body -->
+		    <div id="chat" class="chat-scroll border rounded p-2">
+		      <c:forEach var="m" items="${messages}">
+		        <div class="d-flex mb-2 ${m.senderId == sessionScope.authUser.userId ? 'justify-content-end' : ''}">
+		          <div class="msg ${m.senderId == sessionScope.authUser.userId ? 'me' : 'them'}">
+		            <div class="small">${m.body}</div>
+		            <div class="small-muted mt-1">${m.createdAt}</div>
+		          </div>
+		        </div>
+		      </c:forEach>
+		
+		      <c:if test="${empty messages}">
+		        <div class="text-center text-muted py-5">Start the conversation…</div>
+		      </c:if>
+		    </div>
+		
+		    <!-- Message form -->
+		    <form class="mt-2" method="post" action="${pageContext.request.contextPath}/admin/messages/send">
+		      <input type="hidden" name="conversationId" value="${currentConversationId}">
+		      <div class="input-group">
+		        <input type="text" name="body" class="form-control" placeholder="Type your message here" required maxlength="2000">
+		        <button class="btn btn-primary"><i class="bi bi-send-fill"></i></button>
+		      </div>
+		    </form>
+		
+		  </div> <!-- ✅ This is now correctly placed to close .right-pane -->
+		</div>
 
-            <div id="chat" class="chat-scroll border rounded p-2">
-              <c:forEach var="m" items="${messages}">
-                <div class="d-flex mb-2 ${m.senderId == sessionScope.authUser.userId ? 'justify-content-end' : ''}">
-                  <div class="msg ${m.senderId == sessionScope.authUser.userId ? 'me' : 'them'}">
-                    <div class="small">${m.body}</div>
-                    <div class="small-muted mt-1">${m.createdAt}</div>
-                  </div>
-                </div>
-              </c:forEach>
-
-              <c:if test="${empty messages}">
-                <div class="text-center text-muted py-5">Start the conversation…</div>
-              </c:if>
-            </div>
-
-            <form class="mt-2" method="post" action="${pageContext.request.contextPath}/admin/messages/send">
-              <input type="hidden" name="conversationId" value="${currentConversationId}">
-              <div class="input-group">
-                <input type="text" name="body" class="form-control" placeholder="Type your message here" required maxlength="2000">
-                <button class="btn btn-primary"><i class="bi bi-send-fill"></i></button>
-              </div>
-            </form>
-          </div>
         </div>
 
       </div>

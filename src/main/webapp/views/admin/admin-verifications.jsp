@@ -132,14 +132,14 @@
 
                 <form class="d-inline" method="post" action="${pageContext.request.contextPath}/admin/verifications/decide">
                   <input type="hidden" name="submissionId" value="${row.submissionId}">
-                  <input type="hidden" name="decision" value="approve">
+                  <input type="hidden" name="decision" value="approved">
                   <button class="btn btn-success btn-sm me-1"><i class="bi bi-check-lg me-1"></i>Approve</button>
                 </form>
 
                 <form class="d-inline" method="post" action="${pageContext.request.contextPath}/admin/verifications/decide"
                       onsubmit="return confirm('Reject this verification?');">
                   <input type="hidden" name="submissionId" value="${row.submissionId}">
-                  <input type="hidden" name="decision" value="reject">
+                  <input type="hidden" name="decision" value="denied">
                   <button class="btn btn-danger btn-sm"><i class="bi bi-x-lg me-1"></i>Reject</button>
                 </form>
               </td>

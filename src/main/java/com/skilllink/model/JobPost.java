@@ -12,7 +12,7 @@ public class JobPost implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private Long jobId;
     private Long clientId;           // clients.user_id
-    private Long jobCategoryId;
+    private int jobCategoryId;
     private String title;
     private String description;
     private BigDecimal budgetAmount;
@@ -33,8 +33,8 @@ public class JobPost implements Serializable {
     public void setJobId(Long jobId) { this.jobId = jobId; }
     public Long getClientId() { return clientId; }
     public void setClientId(Long clientId) { this.clientId = clientId; }
-    public Long getJobCategoryId() { return jobCategoryId; }
-    public void setJobCategoryId(Long jobCategoryId) { this.jobCategoryId = jobCategoryId; }
+    public int getJobCategoryId() { return jobCategoryId; }
+    public void setJobCategoryId(int catId) { this.jobCategoryId = catId; }
     public String getTitle() { return title; }
     public void setTitle(String title) { this.title = title; }
     public String getDescription() { return description; }
