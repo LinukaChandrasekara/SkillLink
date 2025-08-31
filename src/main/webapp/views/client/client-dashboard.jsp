@@ -232,9 +232,10 @@
                 skills, location, experience, and other available details.
               </div>
             </div>
-            <a class="btn btn-primary disabled" href="#">
-              To the Model
-            </a>
+            <a class="btn btn-primary" href="javascript:void(0)"
+  			 data-bs-toggle="modal" data-bs-target="#wageEstimatorModal">
+  				To the Model
+			</a>
           </div>
         </div>
 
@@ -297,7 +298,78 @@
     </div>
   </footer>
 </div>
+<!-- Wage Estimator Modal -->
+<div class="modal fade" id="wageEstimatorModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <form class="modal-content" id="wageEstimatorForm">
+      <div class="modal-header">
+        <h5 class="modal-title"><i class="bi bi-cash-coin me-1"></i> Hourly Wage Estimator</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
 
+      <div class="modal-body">
+        <div class="row g-3">
+          <div class="col-12 col-md-6">
+            <label class="form-label">Job Title</label>
+            <input type="text" class="form-control" id="fJobTitle" placeholder="Senior Data Engineer">
+          </div>
+          <div class="col-12 col-md-6">
+            <label class="form-label">Role</label>
+            <input type="text" class="form-control" id="fRole" placeholder="Engineering">
+          </div>
+
+          <div class="col-12">
+            <label class="form-label">Key Skills (comma-separated)</label>
+            <input type="text" class="form-control" id="fSkills" placeholder="Python, SQL, Spark, Airflow, AWS">
+          </div>
+
+          <div class="col-12 col-md-4">
+            <label class="form-label">Work Type</label>
+            <select class="form-select" id="fWorkType">
+              <option>Full-time</option>
+              <option>Part-time</option>
+              <option>Contract</option>
+              <option>Temporary</option>
+            </select>
+          </div>
+
+          <div class="col-12 col-md-4">
+            <label class="form-label">Location</label>
+            <input type="text" class="form-control" id="fLocation" placeholder="Seattle, WA">
+          </div>
+
+          <div class="col-12 col-md-4">
+            <label class="form-label">Company Size</label>
+            <select class="form-select" id="fCompanySize">
+              <option>1-10</option>
+              <option>11-50</option>
+              <option selected>51-200</option>
+              <option>201-500</option>
+              <option>501-1000</option>
+              <option>1001+</option>
+            </select>
+          </div>
+
+          <div class="col-12 col-md-4">
+            <label class="form-label">Experience (years)</label>
+            <input type="number" class="form-control" id="fExperienceYears" step="0.1" min="0" placeholder="5.0">
+          </div>
+        </div>
+
+        <!-- Result area -->
+        <div id="wageResult" class="alert alert-secondary mt-3 d-none"></div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-primary">
+          <span class="me-1" id="wageBtnText">Estimate</span>
+          <span class="spinner-border spinner-border-sm d-none" id="wageSpinner"></span>
+        </button>
+        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </form>
+  </div>
+</div>
 <!-- Upload ID Modal -->
 <div class="modal fade" id="uploadIdModal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog">
@@ -344,6 +416,64 @@
       history.replaceState({}, '', location.pathname + (params.toString() ? '?' + params : ''));
     }
   })();
+</script>
+<script>
+  // Where your FastAPI is running
+  const API_URL = "http://localhost:8000/predict"; // change to your reverse-proxy path in prod
+
+  const form = document.getElementById('wageEstimatorForm');
+  const wageResult = document.getElementById('wageResult');
+  const btnText = document.getElementById('wageBtnText');
+  const spinner = document.getElementById('wageSpinner');
+
+  form.addEventListener('submit', async function (e) {
+    e.preventDefault();
+    wageResult.classList.add('d-none');
+    btnText.textContent = 'Estimating...';
+    spinner.classList.remove('d-none');
+
+    // Gather form values
+    const payload = {
+      job_title:      document.getElementById('fJobTitle').value.trim(),
+      role:           document.getElementById('fRole').value.trim(),
+      skills:         document.getElementById('fSkills').value.trim(),
+      work_type:      document.getElementById('fWorkType').value,
+      location:       document.getElementById('fLocation').value.trim(),
+      company_size:   document.getElementById('fCompanySize').value,
+      experience_years: parseFloat(document.getElementById('fExperienceYears').value || '0')
+    };
+
+    try {
+      const res = await fetch(API_URL, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(payload)
+      });
+
+      if (!res.ok) {
+        throw new Error('API error: ' + res.status);
+      }
+
+      const data = await res.json();
+      wageResult.classList.remove('d-none');
+      wageResult.classList.remove('alert-secondary','alert-danger');
+      wageResult.classList.add('alert-success');
+
+      wageResult.innerHTML = `
+        <div class="fw-semibold mb-1">Estimated Hourly Wage:</div>
+        <div class="display-6">$${data.predicted_hourly_wage.toFixed(2)}/hr</div>
+        <div class="small text-muted">Suggested range: $${data.suggested_range_low.toFixed(2)} – $${data.suggested_range_high.toFixed(2)} /hr</div>
+      `;
+    } catch (err) {
+      wageResult.classList.remove('d-none');
+      wageResult.classList.remove('alert-secondary','alert-success');
+      wageResult.classList.add('alert-danger');
+      wageResult.textContent = 'Sorry, we could not get an estimate. ' + err.message;
+    } finally {
+      btnText.textContent = 'Estimate';
+      spinner.classList.add('d-none');
+    }
+  });
 </script>
 
 </body>
