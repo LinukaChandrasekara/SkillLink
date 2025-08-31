@@ -167,7 +167,6 @@ public class JdbcJobPostDAO implements JobPostDAO {
 
     @Override
     public boolean deny(long jobId, long adminId, String notes) {
-        // (notes) can be saved later in a notes table if needed; schema doesn't include it now
         final String sql = "UPDATE job_posts SET status='denied', reviewer_admin_id=?, reviewed_at=NOW() WHERE job_id=?";
         try (Connection c = DB.getConnection(); PreparedStatement ps = c.prepareStatement(sql)) {
             ps.setLong(1, adminId); ps.setLong(2, jobId);
@@ -181,6 +180,12 @@ public class JdbcJobPostDAO implements JobPostDAO {
         for (int i=0;i<params.size();i++) ps.setObject(i+1, params.get(i));
     }
 
+    /** Safely reads a nullable BIGINT (including UNSIGNED) as Long */
+    private static Long getNullableLong(ResultSet rs, String col) throws SQLException {
+        long v = rs.getLong(col);
+        return rs.wasNull() ? null : v;
+    }
+
     private static JobPost map(ResultSet rs) throws SQLException {
         JobPost j = new JobPost();
         j.setJobId(rs.getLong("job_id"));
@@ -191,7 +196,10 @@ public class JdbcJobPostDAO implements JobPostDAO {
         j.setBudgetAmount(rs.getBigDecimal("budget_amount"));
         j.setLocationText(rs.getString("location_text"));
         j.setStatus(com.skilllink.model.enums.JobStatus.fromDb(rs.getString("status")));
-        j.setReviewerAdminId((Long) rs.getObject("reviewer_admin_id"));
+
+        // FIX: use getLong + wasNull instead of (Long) rs.getObject(..)
+        j.setReviewerAdminId(getNullableLong(rs, "reviewer_admin_id"));
+
         Timestamp t = rs.getTimestamp("reviewed_at"); if (t!=null) j.setReviewedAt(t.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
         Timestamp c = rs.getTimestamp("created_at"); if (c!=null) j.setCreatedAt(c.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
         Timestamp u = rs.getTimestamp("updated_at"); if (u!=null) j.setUpdatedAt(u.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
