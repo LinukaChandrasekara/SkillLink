@@ -150,13 +150,76 @@
             skills, location, experience, and other available details.
           </p>
         </div>
-        <a href="${pageContext.request.contextPath}/admin/wage-estimator" class="btn btn-primary mt-3 mt-md-0">
-          To the Model <i class="bi bi-arrow-right-short ms-1"></i>
+            <a class="btn btn-primary" href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#wageEstimatorModal">To the Model<i class="bi bi-arrow-right-short ms-1"></i>
         </a>
       </div>
     </div>
 
   </main>
+  <!-- Wage Estimator Modal -->
+<div class="modal fade" id="wageEstimatorModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <form class="modal-content" id="wageEstimatorForm">
+      <div class="modal-header">
+        <h5 class="modal-title"><i class="bi bi-cash-coin me-1"></i> Hourly Wage Estimator</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body">
+        <div class="row g-3">
+          <div class="col-12 col-md-6">
+            <label class="form-label">Job Title</label>
+            <input type="text" class="form-control" id="fJobTitle" placeholder="plumber">
+          </div>
+          <div class="col-12 col-md-6">
+            <label class="form-label">Role</label>
+            <input type="text" class="form-control" id="fRole" placeholder="plumbing">
+          </div>
+
+          <div class="col-12">
+            <label class="form-label">Key Skills (comma-separated)</label>
+            <input type="text" class="form-control" id="fSkills" placeholder="plumbing">
+          </div>
+
+          <div class="col-12 col-md-4">
+            <label class="form-label">Work Type</label>
+            <select class="form-select" id="fWorkType">
+              <option>Full-time</option><option>Part-time</option><option>Contract</option><option>Temporary</option>
+            </select>
+          </div>
+
+          <div class="col-12 col-md-4">
+            <label class="form-label">Location</label>
+            <input type="text" class="form-control" id="fLocation" placeholder="Seattle, WA">
+          </div>
+
+          <div class="col-12 col-md-4">
+            <label class="form-label">Company Size</label>
+            <select class="form-select" id="fCompanySize">
+              <option>1-10</option><option>11-50</option><option selected>51-200</option><option>201-500</option><option>501-1000</option><option>1001+</option>
+            </select>
+          </div>
+
+          <div class="col-12 col-md-4">
+            <label class="form-label">Experience</label>
+            <input type="text" class="form-control" id="fExperienceYears" placeholder="e.g., 2 or 3-5 years">
+          </div>
+        </div>
+
+        <!-- Result area -->
+        <div id="wageResult" class="alert alert-secondary mt-3 d-none"></div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-primary">
+          <span class="me-1" id="wageBtnText">Estimate</span>
+          <span class="spinner-border spinner-border-sm d-none" id="wageSpinner"></span>
+        </button>
+        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </form>
+  </div>
+</div>
 
   <!-- STICKY FOOTER -->
   <footer class="footer mt-auto">
@@ -190,5 +253,84 @@
 
 </div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  // API endpoint (proxy in prod; localhost in dev)
+  const API_URL = "http://localhost:8000/predict";
+
+  const form = document.getElementById('wageEstimatorForm');
+  const wageResult = document.getElementById('wageResult');
+  const btnText = document.getElementById('wageBtnText');
+  const spinner = document.getElementById('wageSpinner');
+  const submitBtn = form.querySelector('button[type="submit"]');
+
+  const money = v => Number(v).toLocaleString('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2 });
+
+  function showOk(pred, lo, hi) {
+    wageResult.classList.remove('d-none','alert-secondary','alert-danger');
+    wageResult.classList.add('alert-success');
+    wageResult.innerHTML =
+      '<div class="fw-semibold mb-1">Estimated Hourly Wage:</div>' +
+      '<div class="display-6">' + money(pred) + '/hr</div>' +
+      '<div class="small text-muted">Suggested range: ' + money(lo) + ' – ' + money(hi) + ' /hr</div>';
+  }
+
+  function showErr(msg) {
+    wageResult.classList.remove('d-none','alert-secondary','alert-success');
+    wageResult.classList.add('alert-danger');
+    wageResult.textContent = 'Sorry, we could not get an estimate. ' + msg;
+  }
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    wageResult.classList.add('d-none');
+    btnText.textContent = 'Estimating...';
+    spinner.classList.remove('d-none');
+    submitBtn.disabled = true;
+
+    const payload = {
+      job_title:    document.getElementById('fJobTitle').value.trim(),
+      role:         document.getElementById('fRole').value.trim(),
+      skills:       document.getElementById('fSkills').value.trim(),
+      work_type:    document.getElementById('fWorkType').value,
+      location:     document.getElementById('fLocation').value.trim(),
+      company_size: document.getElementById('fCompanySize').value,
+      experience_years: document.getElementById('fExperienceYears').value.trim() // allow "2" or "3-5 years"
+    };
+
+    try {
+      const res = await fetch(API_URL, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(payload)
+      });
+
+      const raw = await res.text(); // for diagnostics
+      if (!res.ok) throw new Error('HTTP ' + res.status + ' ' + res.statusText + ': ' + raw.slice(0, 200));
+      let data;
+      try { data = JSON.parse(raw); } catch (e) {
+        console.error('Non-JSON response body:', raw);
+        throw new Error('API returned non-JSON. See console.');
+      }
+      console.log('API response:', data);
+
+      const pred = Number(data.predicted_hourly_wage);
+      const lo   = Number(data.suggested_range_low);
+      const hi   = Number(data.suggested_range_high);
+
+      if (!Number.isFinite(pred) || !Number.isFinite(lo) || !Number.isFinite(hi)) {
+        throw new Error('Invalid numbers in response: ' + JSON.stringify(data));
+      }
+
+      showOk(pred, lo, hi);
+    } catch (err) {
+      console.error(err);
+      showErr(err.message || String(err));
+    } finally {
+      btnText.textContent = 'Estimate';
+      spinner.classList.add('d-none');
+      submitBtn.disabled = false;
+    }
+  });
+</script>
 </body>
 </html>

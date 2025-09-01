@@ -1,10 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="c"  uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <c:url var="jobsUrl" value="/client/jobs"/>
 <c:url var="messagesUrl" value="/client/messages"/>
-
-
 
 <%
     com.skilllink.model.User me = (com.skilllink.model.User) session.getAttribute("authUser");
@@ -73,35 +72,17 @@
     <!-- NAV TABS -->
     <div class="nav-tabs-row">
       <div class="container-fluid px-3 px-md-4 py-2 d-flex align-items-center">
-		<ul class="nav">
-		  <li class="nav-item">
-		    <a class="nav-link active" href="${pageContext.request.contextPath}/client/dashboard">Dashboard</a>
-		  </li>
-		
-		  <li class="nav-item">
-		    <a class="nav-link" href="${pageContext.request.contextPath}/client/profile">Manage Profile</a>
-		  </li>
-		
-		  <%-- Verifications: only show if NOT verified --%>
-		  <c:if test="<%= !verified %>">
-		    <li class="nav-item">
-		      <a class="nav-link" href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#uploadIdModal">
-		        Verifications
-		      </a>
-		    </li>
-		  </c:if>
-		
-		  <%-- Always point to /client/jobs, gate with JS if unverified --%>
-		  <li class="nav-item">
-		    <a class="nav-link" id="nav-jobs" href="${jobsUrl}" data-gate="verify">Job Post Management</a>
-		  </li>
-		
-		  <%-- Always point to /client/messages, gate with JS if unverified --%>
-		  <li class="nav-item">
-		    <a class="nav-link" id="nav-msg"  href="${messagesUrl}" data-gate="verify">Messages</a>
-		  </li>
-		</ul>
-
+        <ul class="nav">
+          <li class="nav-item"><a class="nav-link active" href="${pageContext.request.contextPath}/client/dashboard">Dashboard</a></li>
+          <li class="nav-item"><a class="nav-link" href="${pageContext.request.contextPath}/client/profile">Manage Profile</a></li>
+          <c:if test="<%= !verified %>">
+            <li class="nav-item">
+              <a class="nav-link" href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#uploadIdModal">Verifications</a>
+            </li>
+          </c:if>
+          <li class="nav-item"><a class="nav-link" id="nav-jobs" href="${jobsUrl}" data-gate="verify">Job Post Management</a></li>
+          <li class="nav-item"><a class="nav-link" id="nav-msg"  href="${messagesUrl}" data-gate="verify">Messages</a></li>
+        </ul>
         <div class="ms-auto">
           <a class="btn btn-logout" href="${pageContext.request.contextPath}/auth/logout">
             <i class="bi bi-box-arrow-right me-1"></i> Logout
@@ -114,19 +95,15 @@
   <!-- MAIN -->
   <main class="flex-grow-1 container-fluid px-3 px-md-4 py-3 py-md-4">
 
-    <!-- Only for UNVERIFIED -->
     <c:if test="<%= unverified %>">
       <div class="alert alert-warning d-flex align-items-center justify-content-between rounded-outer">
-        <div>
-          <strong>Account Verification Required</strong> — Upload your ID photo to get verified and unlock all features.
-        </div>
+        <div><strong>Account Verification Required</strong> — Upload your ID photo to get verified and unlock all features.</div>
         <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#uploadIdModal">
           <i class="bi bi-upload me-1"></i> Upload ID
         </button>
       </div>
     </c:if>
 
-    <!-- For PENDING -->
     <c:if test="<%= pending %>">
       <div class="alert alert-info d-flex align-items-center rounded-outer">
         <i class="bi bi-hourglass-split me-2"></i>
@@ -159,29 +136,12 @@
 
       <!-- RIGHT CONTENT -->
       <div class="col-12 col-lg-9">
-        <!-- Stats -->
         <div class="row g-3">
-          <div class="col-12 col-md-4">
-            <div class="stat p-3">
-              <div class="text-muted">Jobs posted</div>
-              <div class="display-6 fw-bold">${stats.jobsPosted}</div>
-            </div>
-          </div>
-          <div class="col-12 col-md-4">
-            <div class="stat p-3">
-              <div class="text-muted">Hired / Completed</div>
-              <div class="display-6 fw-bold">${stats.hired}</div>
-            </div>
-          </div>
-          <div class="col-12 col-md-4">
-            <div class="stat p-3">
-              <div class="text-muted">Pending job posts</div>
-              <div class="display-6 fw-bold">${stats.pendingPosts}</div>
-            </div>
-          </div>
+          <div class="col-12 col-md-4"><div class="stat p-3"><div class="text-muted">Jobs posted</div><div class="display-6 fw-bold">${stats.jobsPosted}</div></div></div>
+          <div class="col-12 col-md-4"><div class="stat p-3"><div class="text-muted">Hired / Completed</div><div class="display-6 fw-bold">${stats.hired}</div></div></div>
+          <div class="col-12 col-md-4"><div class="stat p-3"><div class="text-muted">Pending job posts</div><div class="display-6 fw-bold">${stats.pendingPosts}</div></div></div>
         </div>
 
-        <!-- Completed jobs needing review -->
         <div class="rounded-outer p-3 mt-3">
           <div class="d-flex align-items-center justify-content-between">
             <h6 class="mb-0">Completed jobs</h6>
@@ -190,27 +150,18 @@
           <div class="table-responsive mt-2">
             <table class="table table-sm align-middle">
               <thead class="table-light">
-                <tr>
-                  <th>Job title</th>
-                  <th class="text-center">Profile Picture</th>
-                  <th>Worker name</th>
-                  <th class="text-center">Action</th>
-                </tr>
+                <tr><th>Job title</th><th class="text-center">Profile Picture</th><th>Worker name</th><th class="text-center">Action</th></tr>
               </thead>
               <tbody>
                 <c:forEach var="j" items="${completed}">
                   <tr>
                     <td class="fw-semibold">${j.title}</td>
                     <td class="text-center">
-                      <img src="${pageContext.request.contextPath}/media/user/profile?userId=${j.workerId}"
-                           class="rounded-circle" style="width:36px;height:36px;object-fit:cover" alt="">
+                      <img src="${pageContext.request.contextPath}/media/user/profile?userId=${j.workerId}" class="rounded-circle" style="width:36px;height:36px;object-fit:cover" alt="">
                     </td>
                     <td>${j.workerName}</td>
                     <td class="text-center">
-                      <a class="btn btn-outline-primary btn-sm"
-                         href="${pageContext.request.contextPath}/client/reviews/new?jobId=${j.jobId}">
-                        Review
-                      </a>
+                      <a class="btn btn-outline-primary btn-sm" href="${pageContext.request.contextPath}/client/reviews/new?jobId=${j.jobId}">Review</a>
                     </td>
                   </tr>
                 </c:forEach>
@@ -222,20 +173,13 @@
           </div>
         </div>
 
-        <!-- Wage estimator promo -->
         <div class="rounded-outer p-3 mt-3">
           <div class="d-flex align-items-center justify-content-between">
             <div>
               <div class="fw-bold">Hourly Wage Estimator</div>
-              <div class="small text-muted">
-                A machine-learning model that predicts a fair hourly pay range for a job posting using role,
-                skills, location, experience, and other available details.
-              </div>
+              <div class="small text-muted">A machine-learning model that predicts a fair hourly pay range for a job posting using role, skills, location, experience, and other available details.</div>
             </div>
-            <a class="btn btn-primary" href="javascript:void(0)"
-  			 data-bs-toggle="modal" data-bs-target="#wageEstimatorModal">
-  				To the Model
-			</a>
+            <a class="btn btn-primary" href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#wageEstimatorModal">To the Model</a>
           </div>
         </div>
 
@@ -243,7 +187,6 @@
     </div>
   </main>
 
-  <!-- FOOTER -->
   <footer class="footer mt-auto">
     <div class="container-fluid px-3 px-md-4 py-4">
       <div class="row g-4 align-items-start">
@@ -251,33 +194,14 @@
           <h6 class="mb-3">Quick Links</h6>
           <div class="d-flex flex-column gap-1">
             <a class="link-light text-decoration-none" href="${pageContext.request.contextPath}/client/profile">Manage Profile</a>
-
-            <!-- Verifications quick link: only if NOT verified -->
-            <c:if test="<%= !verified %>">
-              <a class="link-light text-decoration-none"
-                 href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#uploadIdModal">
-                Verifications
-              </a>
-            </c:if>
-
-            <!-- Job Post Management quick link: modal if unverified -->
+            <c:if test="<%= !verified %>"><a class="link-light text-decoration-none" href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#uploadIdModal">Verifications</a></c:if>
             <c:choose>
-              <c:when test="<%= unverified %>">
-                <a class="link-light text-decoration-none" href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#uploadIdModal">Job Post Management</a>
-              </c:when>
-              <c:otherwise>
-                <a class="link-light text-decoration-none" href="${pageContext.request.contextPath}/client/jobs">Job Post Management</a>
-              </c:otherwise>
+              <c:when test="<%= unverified %>"><a class="link-light text-decoration-none" href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#uploadIdModal">Job Post Management</a></c:when>
+              <c:otherwise><a class="link-light text-decoration-none" href="${pageContext.request.contextPath}/client/jobs">Job Post Management</a></c:otherwise>
             </c:choose>
-
-            <!-- Messages quick link: modal if unverified -->
             <c:choose>
-              <c:when test="<%= unverified %>">
-                <a class="link-light text-decoration-none" href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#uploadIdModal">Messages</a>
-              </c:when>
-              <c:otherwise>
-                <a class="link-light text-decoration-none" href="${pageContext.request.contextPath}/client/messages">Messages</a>
-              </c:otherwise>
+              <c:when test="<%= unverified %>"><a class="link-light text-decoration-none" href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#uploadIdModal">Messages</a></c:when>
+              <c:otherwise><a class="link-light text-decoration-none" href="${pageContext.request.contextPath}/client/messages">Messages</a></c:otherwise>
             </c:choose>
           </div>
         </div>
@@ -298,6 +222,7 @@
     </div>
   </footer>
 </div>
+
 <!-- Wage Estimator Modal -->
 <div class="modal fade" id="wageEstimatorModal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-lg">
@@ -311,25 +236,22 @@
         <div class="row g-3">
           <div class="col-12 col-md-6">
             <label class="form-label">Job Title</label>
-            <input type="text" class="form-control" id="fJobTitle" placeholder="Senior Data Engineer">
+            <input type="text" class="form-control" id="fJobTitle" placeholder="plumber">
           </div>
           <div class="col-12 col-md-6">
             <label class="form-label">Role</label>
-            <input type="text" class="form-control" id="fRole" placeholder="Engineering">
+            <input type="text" class="form-control" id="fRole" placeholder="plumbing">
           </div>
 
           <div class="col-12">
             <label class="form-label">Key Skills (comma-separated)</label>
-            <input type="text" class="form-control" id="fSkills" placeholder="Python, SQL, Spark, Airflow, AWS">
+            <input type="text" class="form-control" id="fSkills" placeholder="plumbing">
           </div>
 
           <div class="col-12 col-md-4">
             <label class="form-label">Work Type</label>
             <select class="form-select" id="fWorkType">
-              <option>Full-time</option>
-              <option>Part-time</option>
-              <option>Contract</option>
-              <option>Temporary</option>
+              <option>Full-time</option><option>Part-time</option><option>Contract</option><option>Temporary</option>
             </select>
           </div>
 
@@ -341,18 +263,13 @@
           <div class="col-12 col-md-4">
             <label class="form-label">Company Size</label>
             <select class="form-select" id="fCompanySize">
-              <option>1-10</option>
-              <option>11-50</option>
-              <option selected>51-200</option>
-              <option>201-500</option>
-              <option>501-1000</option>
-              <option>1001+</option>
+              <option>1-10</option><option>11-50</option><option selected>51-200</option><option>201-500</option><option>501-1000</option><option>1001+</option>
             </select>
           </div>
 
           <div class="col-12 col-md-4">
-            <label class="form-label">Experience (years)</label>
-            <input type="number" class="form-control" id="fExperienceYears" step="0.1" min="0" placeholder="5.0">
+            <label class="form-label">Experience</label>
+            <input type="text" class="form-control" id="fExperienceYears" placeholder="e.g., 2 or 3-5 years">
           </div>
         </div>
 
@@ -370,6 +287,7 @@
     </form>
   </div>
 </div>
+
 <!-- Upload ID Modal -->
 <div class="modal fade" id="uploadIdModal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog">
@@ -397,18 +315,17 @@
   (function () {
     const isUnverified = '<%= ("unverified".equalsIgnoreCase(vStatus)) ? "1" : "0" %>' === '1';
 
-    // Gate any link marked with data-gate="verify"
+    // Gate links needing verification
     document.querySelectorAll('a[data-gate="verify"]').forEach(a => {
       a.addEventListener('click', function (e) {
         if (isUnverified) {
           e.preventDefault();
-          const m = new bootstrap.Modal(document.getElementById('uploadIdModal'));
-          m.show();
+          new bootstrap.Modal(document.getElementById('uploadIdModal')).show();
         }
       });
     });
 
-    // Optional: handle ?verify=1 only for unverified users
+    // ?verify=1 opens modal for unverified users
     const params = new URLSearchParams(location.search);
     if (params.get('verify') === '1' && isUnverified) {
       new bootstrap.Modal(document.getElementById('uploadIdModal')).show();
@@ -417,30 +334,49 @@
     }
   })();
 </script>
+
 <script>
-  // Where your FastAPI is running
-  const API_URL = "http://localhost:8000/predict"; // change to your reverse-proxy path in prod
+  // API endpoint (proxy in prod; localhost in dev)
+  const API_URL = "http://localhost:8000/predict";
 
   const form = document.getElementById('wageEstimatorForm');
   const wageResult = document.getElementById('wageResult');
   const btnText = document.getElementById('wageBtnText');
   const spinner = document.getElementById('wageSpinner');
+  const submitBtn = form.querySelector('button[type="submit"]');
 
-  form.addEventListener('submit', async function (e) {
+  const money = v => Number(v).toLocaleString('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2 });
+
+  function showOk(pred, lo, hi) {
+    wageResult.classList.remove('d-none','alert-secondary','alert-danger');
+    wageResult.classList.add('alert-success');
+    wageResult.innerHTML =
+      '<div class="fw-semibold mb-1">Estimated Hourly Wage:</div>' +
+      '<div class="display-6">' + money(pred) + '/hr</div>' +
+      '<div class="small text-muted">Suggested range: ' + money(lo) + ' – ' + money(hi) + ' /hr</div>';
+  }
+
+  function showErr(msg) {
+    wageResult.classList.remove('d-none','alert-secondary','alert-success');
+    wageResult.classList.add('alert-danger');
+    wageResult.textContent = 'Sorry, we could not get an estimate. ' + msg;
+  }
+
+  form.addEventListener('submit', async (e) => {
     e.preventDefault();
     wageResult.classList.add('d-none');
     btnText.textContent = 'Estimating...';
     spinner.classList.remove('d-none');
+    submitBtn.disabled = true;
 
-    // Gather form values
     const payload = {
-      job_title:      document.getElementById('fJobTitle').value.trim(),
-      role:           document.getElementById('fRole').value.trim(),
-      skills:         document.getElementById('fSkills').value.trim(),
-      work_type:      document.getElementById('fWorkType').value,
-      location:       document.getElementById('fLocation').value.trim(),
-      company_size:   document.getElementById('fCompanySize').value,
-      experience_years: parseFloat(document.getElementById('fExperienceYears').value || '0')
+      job_title:    document.getElementById('fJobTitle').value.trim(),
+      role:         document.getElementById('fRole').value.trim(),
+      skills:       document.getElementById('fSkills').value.trim(),
+      work_type:    document.getElementById('fWorkType').value,
+      location:     document.getElementById('fLocation').value.trim(),
+      company_size: document.getElementById('fCompanySize').value,
+      experience_years: document.getElementById('fExperienceYears').value.trim() // allow "2" or "3-5 years"
     };
 
     try {
@@ -450,31 +386,35 @@
         body: JSON.stringify(payload)
       });
 
-      if (!res.ok) {
-        throw new Error('API error: ' + res.status);
+      const raw = await res.text(); // for diagnostics
+      if (!res.ok) throw new Error('HTTP ' + res.status + ' ' + res.statusText + ': ' + raw.slice(0, 200));
+      let data;
+      try { data = JSON.parse(raw); } catch (e) {
+        console.error('Non-JSON response body:', raw);
+        throw new Error('API returned non-JSON. See console.');
+      }
+      console.log('API response:', data);
+
+      const pred = Number(data.predicted_hourly_wage);
+      const lo   = Number(data.suggested_range_low);
+      const hi   = Number(data.suggested_range_high);
+
+      if (!Number.isFinite(pred) || !Number.isFinite(lo) || !Number.isFinite(hi)) {
+        throw new Error('Invalid numbers in response: ' + JSON.stringify(data));
       }
 
-      const data = await res.json();
-      wageResult.classList.remove('d-none');
-      wageResult.classList.remove('alert-secondary','alert-danger');
-      wageResult.classList.add('alert-success');
-
-      wageResult.innerHTML = `
-        <div class="fw-semibold mb-1">Estimated Hourly Wage:</div>
-        <div class="display-6">$${data.predicted_hourly_wage.toFixed(2)}/hr</div>
-        <div class="small text-muted">Suggested range: $${data.suggested_range_low.toFixed(2)} – $${data.suggested_range_high.toFixed(2)} /hr</div>
-      `;
+      showOk(pred, lo, hi);
     } catch (err) {
-      wageResult.classList.remove('d-none');
-      wageResult.classList.remove('alert-secondary','alert-success');
-      wageResult.classList.add('alert-danger');
-      wageResult.textContent = 'Sorry, we could not get an estimate. ' + err.message;
+      console.error(err);
+      showErr(err.message || String(err));
     } finally {
       btnText.textContent = 'Estimate';
       spinner.classList.add('d-none');
+      submitBtn.disabled = false;
     }
   });
 </script>
+
 
 </body>
 </html>

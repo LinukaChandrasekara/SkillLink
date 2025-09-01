@@ -13,6 +13,51 @@ import java.util.Optional;
 
 public class JdbcJobPostDAO implements JobPostDAO {
 
+	@Override
+	public List<JobPost> listApprovedByCategory(int jobCategoryId, int limit) {
+	    final String sql = """
+	        SELECT j.*, jc.name AS job_category_name, u.full_name AS client_name
+	          FROM job_posts j
+	          JOIN job_categories jc ON jc.job_category_id = j.job_category_id
+	          JOIN users u          ON u.user_id        = j.client_id
+	         WHERE j.status='approved' AND j.job_category_id=?
+	         ORDER BY j.created_at DESC
+	         LIMIT ?
+	    """;
+	    java.util.List<com.skilllink.model.JobPost> out = new java.util.ArrayList<>();
+	    try (Connection c = DB.getConnection();
+	         PreparedStatement ps = c.prepareStatement(sql)) {
+	        ps.setInt(1, jobCategoryId);
+	        ps.setInt(2, Math.max(1, limit));
+	        try (ResultSet rs = ps.executeQuery()) {
+	            while (rs.next()) out.add(map(rs)); // uses your existing private map(ResultSet)
+	        }
+	    } catch (SQLException e) { throw new RuntimeException(e); }
+	    return out;
+	}
+	@Override
+	public List<JobPost> listApprovedForWorker(long workerId, int limit) {
+	    final String sql = """
+	        SELECT j.*, jc.name AS job_category_name, u.full_name AS client_name
+	          FROM job_posts j
+	          JOIN job_categories jc ON jc.job_category_id = j.job_category_id
+	          JOIN users u            ON u.user_id          = j.client_id
+	          JOIN workers w          ON w.job_category_id  = j.job_category_id
+	         WHERE w.user_id = ? AND j.status = 'approved'
+	         ORDER BY j.created_at DESC
+	         LIMIT ?
+	    """;
+	    List<JobPost> out = new java.util.ArrayList<>();
+	    try (Connection c = DB.getConnection(); PreparedStatement ps = c.prepareStatement(sql)) {
+	        ps.setLong(1, workerId);
+	        ps.setInt(2, Math.max(1, limit));
+	        try (ResultSet rs = ps.executeQuery()) {
+	            while (rs.next()) out.add(map(rs)); // uses your existing map(..) (with nullable long fix)
+	        }
+	    } catch (SQLException e) { throw new RuntimeException(e); }
+	    return out;
+	}
+
     @Override
     public long countByStatus(JobStatus status) {
         final String sql = "SELECT COUNT(*) FROM job_posts WHERE status=?";

@@ -23,5 +23,7 @@ public interface JobPostDAO {
 
     boolean deleteByClientIfEditable(long jobId, long clientId);
     // DELETE FROM job_posts WHERE job_id=? AND client_id=? AND status IN ('pending','denied')
+    List<JobPost> listApprovedForWorker(long workerId, int limit);
+    List<JobPost> listApprovedByCategory(int jobCategoryId, int limit);
 
 }

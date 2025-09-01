@@ -29,4 +29,16 @@ public class JdbcWorkerDAO implements WorkerDAO {
             try (ResultSet rs = ps.executeQuery()) { return rs.next(); }
         } catch (SQLException e) { throw new RuntimeException(e); }
     }
+    @Override
+    public Integer getCategoryId(long workerUserId) {
+        final String sql = "SELECT job_category_id FROM workers WHERE user_id=?";
+        try (Connection c = DB.getConnection();
+             PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setLong(1, workerUserId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) return rs.getInt(1);
+                return null;
+            }
+        } catch (SQLException e) { throw new RuntimeException(e); }
+    }
 }

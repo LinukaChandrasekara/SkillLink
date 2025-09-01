@@ -17,7 +17,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.sql.*;
 
-@WebServlet(name="ClientIdUploadServlet", urlPatterns={"/client/verification/upload"})
+
 @MultipartConfig(maxFileSize = 32 * 1024 * 1024) // allow up to 10MB just in case
 public class ClientIdUploadServlet extends HttpServlet {
 
