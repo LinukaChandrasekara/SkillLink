@@ -1,10 +1,10 @@
-// src/main/java/com/skilllink/dao/jdbc/JdbcConversationDAO.java
 package com.skilllink.dao.jdbc;
 
 import com.skilllink.dao.ConversationDAO;
 import com.skilllink.dao.dto.ConversationSummary;
 
 import java.sql.*;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,17 +12,18 @@ public class JdbcConversationDAO implements ConversationDAO {
 
     @Override
     public List<ConversationSummary> listForUser(long userId) {
-        // Pull conversations where user participates, attach last message and a best-effort "other user" for 1:1
+        // Pull conversations where the user participates + last message + "other user" (for 1:1)
         final String sql =
             "SELECT c.conversation_id, c.is_group, " +
             "       ou.user_id AS other_user_id, ou.full_name AS other_full_name, " +
             "       MAX(m.created_at) AS last_time, " +
             "       SUBSTRING_INDEX( " +
-            "         MAX(CONCAT(LPAD(UNIX_TIMESTAMP(m.created_at),10,'0'),'||', m.body)), " +
+            "         MAX(CONCAT(LPAD(UNIX_TIMESTAMP(m.created_at),10,'0'),'||', COALESCE(m.body,''))), " +
             "         '||', -1 " +
             "       ) AS last_snippet " +
             "FROM conversations c " +
-            "JOIN conversation_participants cp ON cp.conversation_id = c.conversation_id AND cp.user_id = ? " +
+            "JOIN conversation_participants cp " +
+            "  ON cp.conversation_id = c.conversation_id AND cp.user_id = ? " +
             "LEFT JOIN ( " +
             "   SELECT cp2.conversation_id, u.user_id, u.full_name " +
             "   FROM conversation_participants cp2 " +
@@ -38,6 +39,7 @@ public class JdbcConversationDAO implements ConversationDAO {
              PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setLong(1, userId);
             ps.setLong(2, userId);
+
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     ConversationSummary cs = new ConversationSummary();
@@ -51,7 +53,13 @@ public class JdbcConversationDAO implements ConversationDAO {
                     cs.setTitle(isGroup
                         ? ("Group #" + cid)
                         : (otherName == null ? ("Conversation #" + cid) : otherName));
+
                     cs.setLastSnippet(rs.getString("last_snippet"));
+
+                    Timestamp t = rs.getTimestamp("last_time");
+                    if (t != null) {
+                        cs.setLastMessageAt(t.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
+                    }
 
                     cs.setUnreadCount(unreadCountForViewer(con, cid, userId));
                     out.add(cs);
@@ -97,7 +105,6 @@ public class JdbcConversationDAO implements ConversationDAO {
         }
     }
 
-
     @Override
     public long create(long createdBy, Long jobId, boolean isGroup) {
         final String sql = "INSERT INTO conversations(created_by, job_id, is_group) VALUES (?,?,?)";
@@ -137,7 +144,7 @@ public class JdbcConversationDAO implements ConversationDAO {
             ps.setLong(1, conversationId);
             ps.setLong(2, currentUserId);
             try (ResultSet rs = ps.executeQuery()) {
-                return rs.next() ? rs.getLong(1) : currentUserId; // fallback
+                return rs.next() ? rs.getLong(1) : currentUserId; // fallback to self
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);

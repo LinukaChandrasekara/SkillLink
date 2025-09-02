@@ -22,7 +22,7 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet"/>
   <style>
-    :root{ --primary:#4e73df; --light:#f5f6f8; }
+    :root{ --primary:#4e73df; --light:#f5f6f8; --cardHead:#2856ea; --amber:#f59e0b; }
     body{ background:var(--light); }
     .topbar{ background:var(--primary); color:#fff; }
     .brand{ font-weight:800; font-size:1.35rem; }
@@ -33,14 +33,28 @@
     .rounded-outer{ background:#fff; border:1px solid #e9ecef; border-radius:1rem; }
     .footer{ background:var(--primary); color:#fff; }
     .contact-icon{ width:36px; height:36px; display:inline-flex; align-items:center; justify-content:center; background:#fff; color:#0d6efd; border-radius:50%; }
+
     .avatar{ width:64px; height:64px; border-radius:50%; border:3px solid rgba(255,255,255,.5); object-fit:cover; background:#e9ecef; }
+    .avatar-sm{ width:56px; height:56px; border-radius:50%; object-fit:cover; background:#e9ecef; }
+
     .chip{ display:inline-block; padding:.2rem .6rem; border-radius:999px; font-size:.8rem; }
     .chip-verified{ background:#d1e7dd; color:#0f5132; }
     .chip-pending{ background:#fff3cd; color:#664d03; }
     .chip-unverified{ background:#f8d7da; color:#842029; }
-    .offer-card{ border:1px solid #e9ecef; border-radius:1rem; }
-    .offer-head{ background:#eef2ff; border-top-left-radius:1rem; border-top-right-radius:1rem; padding:.5rem .75rem; font-weight:700; }
+
     .stat{ border:1px solid #e9ecef; border-radius:1rem; background:#fff; }
+
+    /* Stars (bigger & clearer) */
+    .rating-stars{ font-size:1.4rem; letter-spacing:1px; }
+    .rating-stars .filled{ color:var(--amber); }
+    .rating-stars .empty{ color:#d9d9d9; }
+
+    /* Offer card like screenshot */
+    .offer-card{ border:1px solid #e9ecef; border-radius:1rem; overflow:hidden; }
+    .offer-head{ background:var(--cardHead); color:#fff; padding:.6rem .9rem; font-weight:700; }
+    .offer-body{ padding:1rem; }
+    .offer-meta i{ width:20px; }
+    .btn-accept{ padding:.6rem 1.2rem; font-weight:600; }
   </style>
 </head>
 <body>
@@ -78,7 +92,7 @@
           </c:if>
 
           <li class="nav-item">
-            <a class="nav-link" id="nav-offers" href="${pageContext.request.contextPath}/worker/dashboard#offers" data-gate="verify">Job offers</a>
+            <a class="nav-link" id="nav-offers" href="${pageContext.request.contextPath}/worker/jobs" data-gate="verify">Job offers</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" id="nav-msg" href="${pageContext.request.contextPath}/worker/messages" data-gate="verify">Messages</a>
@@ -134,17 +148,10 @@
             <c:out value="${sessionScope.authUser.bio}"/>
           </div>
 
-          <div class="mb-2">
-            <span class="text-warning">
-              <c:forEach var="i" begin="1" end="5">
-                <i class="bi" style="font-size:1rem; vertical-align:middle; <%-- filled or empty --%>">
-                  <c:choose>
-                    <c:when test="${i <= ratingRounded}">★</c:when>
-                    <c:otherwise>☆</c:otherwise>
-                  </c:choose>
-                </i>
-              </c:forEach>
-            </span>
+          <div class="mb-3 rating-stars">
+            <c:forEach var="i" begin="1" end="5">
+              <span class="${i <= ratingRounded ? 'filled' : 'empty'}">★</span>
+            </c:forEach>
             <span class="small text-muted ms-1">(${ratingCount} reviews)</span>
           </div>
 
@@ -170,59 +177,182 @@
                 <div class="fw-bold">Hourly Wage Estimator</div>
                 <div class="small text-muted">A machine-learning model that predicts a fair hourly pay range for a job using role, skills, location and experience.</div>
               </div>
-              <a class="btn btn-primary disabled" href="#">To the Model</a>
+                <a class="btn btn-primary" href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#wageEstimatorModal">To the Model<i class="bi bi-arrow-right-short ms-1"></i></a>
             </div>
           </div>
         </div>
 
         <!-- Job offers -->
+        <c:set var="acceptedId" value="${param.acceptedId}" />
+        
         <div id="offers" class="rounded-outer p-3 mt-3">
           <div class="d-flex align-items-center justify-content-between">
             <h6 class="mb-0">Job offers</h6>
-            <span class="badge text-bg-primary">${fn:length(offers)}</span>
+            <span class="badge text-bg-primary">${fn:length(matchingJobs)}</span>
           </div>
-			  <div class="row row-cols-1 row-cols-md-3 g-3 mt-2">
-			    <c:forEach var="j" items="${matchingJobs}">
-			      <div class="col">
-			        <div class="card h-100">
-			          <div class="card-header fw-semibold">
-			            <i class="bi bi-briefcase me-1"></i><c:out value="${j.title}"/>
-			          </div>
-			          <div class="card-body small">
-			            <div class="mb-2 text-muted" style="min-height:3.6rem;">
-			              <c:out value="${j.description}"/>
-			            </div>
-			            <div class="d-flex flex-column gap-1">
-			              <div><i class="bi bi-geo-alt me-1"></i><c:out value="${j.locationText}"/></div>
-			              <div><i class="bi bi-tag me-1"></i><c:out value="${j.jobCategoryName}"/></div>
-			              <div><i class="bi bi-person me-1"></i>Client: <c:out value="${j.clientName}"/></div>
-			              <div><i class="bi bi-cash-coin me-1"></i>Rs. ${j.budgetAmount}</div>
-			            </div>
-			          </div>
-			          <div class="card-footer text-end">
-			            <a class="btn btn-success btn-sm"
-			               href="${pageContext.request.contextPath}/worker/offers/accept?jobId=${j.jobId}">
-			              Accept
-			            </a>
-			          </div>
-			        </div>
-			      </div>
-			    </c:forEach>
-			
-			    <c:if test="${empty matchingJobs}">
-			      <div class="col">
-			        <div class="alert alert-info mb-0">
-			          No matching jobs yet for your category
-			          <c:if test="${empty workerCategoryId}">(please set your category in profile)</c:if>.
-			        </div>
-			      </div>
-			    </c:if>
+
+          <div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-3 mt-2">
+            <c:forEach var="j" items="${matchingJobs}">
+              <div class="col">
+                <div class="offer-card h-100">
+                  <div class="offer-head">
+                    <i class="bi bi-briefcase me-1"></i>
+                    <c:out value="${j.title}"/>
+                  </div>
+
+                  <div class="offer-body">
+                    <div class="d-flex align-items-center gap-2 mb-2">
+                      <img class="avatar-sm" src="${pageContext.request.contextPath}/media/user/profile?userId=${j.clientId}" alt="">
+                      <div class="small">
+                        <div>Posted by <strong><c:out value="${j.clientName}"/></strong></div>
+                        <div class="text-muted">Category: <c:out value="${j.jobCategoryName}"/></div>
+                      </div>
+                    </div>
+
+                    <div class="offer-meta small mb-2">
+                      <div class="mb-1"><i class="bi bi-geo-alt me-1"></i>Location: <c:out value="${j.locationText}"/></div>
+                      <div class="mb-1"><i class="bi bi-cash-coin me-1"></i>Budget: Rs. ${j.budgetAmount}</div>
+                    </div>
+
+                    <div class="small text-muted mb-3"><c:out value="${j.description}"/></div>
+
+                    <div class="d-grid">
+					 <div class="card-footer text-end">
+					  <c:choose>
+					    <c:when test="${acceptedId == j.jobId}">
+					      <button class="btn btn-secondary btn-sm" disabled>
+					        <i class="bi bi-check2-circle me-1"></i>Accepted
+					      </button>
+					    </c:when>
+					    <c:otherwise>
+					      <a class="btn btn-success btn-sm"
+					         href="${pageContext.request.contextPath}/worker/offers/accept?jobId=${j.jobId}">
+					        <i class="bi bi-check2 me-1"></i>Accept
+					      </a>
+					    </c:otherwise>
+					  </c:choose>
+					</div>
+
+
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </c:forEach>
+
+            <c:if test="${empty matchingJobs}">
+              <div class="col">
+                <div class="alert alert-info mb-0">
+                  No matching jobs yet for your category
+                  <c:if test="${empty workerCategoryId}">(please set your category in profile)</c:if>.
+                </div>
+              </div>
+            </c:if>
+          </div>
+        </div>
+
+        <!-- Recent Reviews -->
+        <div class="rounded-outer p-3 mt-3">
+          <div class="d-flex align-items-center justify-content-between">
+            <h6 class="mb-0">Recent reviews from clients</h6>
+            <span class="badge text-bg-secondary">${fn:length(recentReviews)}</span>
+          </div>
+
+          <div class="mt-2">
+            <c:forEach var="rv" items="${recentReviews}">
+              <div class="d-flex gap-3 py-2 border-bottom">
+                <img class="avatar-sm" src="${pageContext.request.contextPath}/media/user/profile?userId=${rv.clientId}" alt="">
+                <div class="flex-grow-1">
+                  <div class="d-flex flex-wrap align-items-center gap-2">
+                    <strong><c:out value="${rv.clientName}"/></strong>
+                    <span class="text-muted small">on</span>
+                    <span class="small fw-semibold"><c:out value="${rv.jobTitle}"/></span>
+                    <span class="ms-auto small text-muted">${rv.createdAt}</span>
+                  </div>
+                  <div class="rating-stars mt-1">
+                    <c:forEach var="i" begin="1" end="5">
+                      <span class="${i <= rv.rating ? 'filled' : 'empty'}">★</span>
+                    </c:forEach>
+                  </div>
+                  <div class="small mt-1"><c:out value="${rv.comment}"/></div>
+                </div>
+              </div>
+            </c:forEach>
+
+            <c:if test="${empty recentReviews}">
+              <div class="text-muted small">No reviews yet.</div>
+            </c:if>
           </div>
         </div>
 
       </div>
     </div>
   </main>
+  
+    <!-- Wage Estimator Modal -->
+<div class="modal fade" id="wageEstimatorModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <form class="modal-content" id="wageEstimatorForm">
+      <div class="modal-header">
+        <h5 class="modal-title"><i class="bi bi-cash-coin me-1"></i> Hourly Wage Estimator</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body">
+        <div class="row g-3">
+          <div class="col-12 col-md-6">
+            <label class="form-label">Job Title</label>
+            <input type="text" class="form-control" id="fJobTitle" placeholder="plumber">
+          </div>
+          <div class="col-12 col-md-6">
+            <label class="form-label">Role</label>
+            <input type="text" class="form-control" id="fRole" placeholder="plumbing">
+          </div>
+
+          <div class="col-12">
+            <label class="form-label">Key Skills (comma-separated)</label>
+            <input type="text" class="form-control" id="fSkills" placeholder="plumbing">
+          </div>
+
+          <div class="col-12 col-md-4">
+            <label class="form-label">Work Type</label>
+            <select class="form-select" id="fWorkType">
+              <option>Full-time</option><option>Part-time</option><option>Contract</option><option>Temporary</option>
+            </select>
+          </div>
+
+          <div class="col-12 col-md-4">
+            <label class="form-label">Location</label>
+            <input type="text" class="form-control" id="fLocation" placeholder="Seattle, WA">
+          </div>
+
+          <div class="col-12 col-md-4">
+            <label class="form-label">Company Size</label>
+            <select class="form-select" id="fCompanySize">
+              <option>1-10</option><option>11-50</option><option selected>51-200</option><option>201-500</option><option>501-1000</option><option>1001+</option>
+            </select>
+          </div>
+
+          <div class="col-12 col-md-4">
+            <label class="form-label">Experience</label>
+            <input type="text" class="form-control" id="fExperienceYears" placeholder="e.g., 2 or 3-5 years">
+          </div>
+        </div>
+
+        <!-- Result area -->
+        <div id="wageResult" class="alert alert-secondary mt-3 d-none"></div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-primary">
+          <span class="me-1" id="wageBtnText">Estimate</span>
+          <span class="spinner-border spinner-border-sm d-none" id="wageSpinner"></span>
+        </button>
+        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </form>
+  </div>
+</div>
 
   <!-- FOOTER -->
   <footer class="footer mt-auto">
@@ -233,8 +363,12 @@
           <div class="d-flex flex-column gap-1">
             <a class="link-light text-decoration-none" href="${pageContext.request.contextPath}/worker/profile">Manage Profile</a>
             <c:choose>
-              <c:when test="<%= unverified %>"><a class="link-light text-decoration-none" href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#uploadIdModal">Verifications</a></c:when>
-              <c:otherwise><a class="link-light text-decoration-none" href="${pageContext.request.contextPath}/worker/verification">Verifications</a></c:otherwise>
+              <c:when test="<%= unverified %>">
+                <a class="link-light text-decoration-none" href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#uploadIdModal">Verifications</a>
+              </c:when>
+              <c:otherwise>
+                <a class="link-light text-decoration-none" href="${pageContext.request.contextPath}/worker/verification">Verifications</a>
+              </c:otherwise>
             </c:choose>
             <a class="link-light text-decoration-none" href="${pageContext.request.contextPath}/worker/dashboard#offers">Job offers</a>
             <a class="link-light text-decoration-none" href="${pageContext.request.contextPath}/worker/messages">Messages</a>
@@ -242,7 +376,9 @@
         </div>
         <div class="col-12 col-md-4 text-center">
           <div class="fw-bold">SkillLink. Connecting skilled workers with local opportunities across Sri Lanka.</div>
-          <div class="small opacity-75 mt-2">&copy; <script>document.write(new Date().getFullYear())</script> Linuka Chandrasekara</div>
+          <div class="small opacity-75 mt-2">&copy;
+            <script>document.write(new Date().getFullYear())</script> Linuka Chandrasekara
+          </div>
         </div>
         <div class="col-12 col-md-4">
           <h6 class="mb-3">Contact Us</h6>

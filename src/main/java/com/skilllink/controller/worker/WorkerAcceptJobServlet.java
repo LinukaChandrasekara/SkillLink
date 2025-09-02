@@ -17,7 +17,7 @@ import jakarta.servlet.http.*;
 import java.io.IOException;
 import java.util.Optional;
 
-@WebServlet(name="WorkerAcceptJobServlet", urlPatterns={"/worker/offers/accept"})
+
 public class WorkerAcceptJobServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
