@@ -153,21 +153,38 @@
                 <tr><th>Job title</th><th class="text-center">Profile Picture</th><th>Worker name</th><th class="text-center">Action</th></tr>
               </thead>
               <tbody>
-                <c:forEach var="j" items="${completed}">
-                  <tr>
-                    <td class="fw-semibold">${j.title}</td>
-                    <td class="text-center">
-                      <img src="${pageContext.request.contextPath}/media/user/profile?userId=${j.workerId}" class="rounded-circle" style="width:36px;height:36px;object-fit:cover" alt="">
-                    </td>
-                    <td>${j.workerName}</td>
-                    <td class="text-center">
-                      <a class="btn btn-outline-primary btn-sm" href="${pageContext.request.contextPath}/client/reviews/new?jobId=${j.jobId}">Review</a>
-                    </td>
-                  </tr>
-                </c:forEach>
-                <c:if test="${empty completed}">
-                  <tr><td colspan="4" class="text-center text-muted py-4">No completed jobs yet.</td></tr>
-                </c:if>
+				<c:forEach var="j" items="${completed}">
+				  <tr>
+				    <td class="fw-semibold">${j.title}</td>
+				    <td class="text-center">
+				      <img src="${pageContext.request.contextPath}/media/user/profile?userId=${j.workerId}"
+				           class="rounded-circle" style="width:36px;height:36px;object-fit:cover" alt="">
+				    </td>
+				    <td>${j.workerName}</td>
+				    <td class="text-center">
+				      <c:choose>
+				        <c:when test="${j.reviewed}">
+				          <span class="badge text-bg-success">Reviewed</span>
+				        </c:when>
+				        <c:otherwise>
+				          <button type="button"
+				                  class="btn btn-outline-primary btn-sm reviewBtn"
+				                  data-job="${j.jobId}"
+				                  data-worker="${j.workerId}"
+				                  data-title="${fn:escapeXml(j.title)}"
+				                  data-workername="${fn:escapeXml(j.workerName)}">
+				            Review
+				          </button>
+				        </c:otherwise>
+				      </c:choose>
+				    </td>
+				  </tr>
+				</c:forEach>
+				
+				<c:if test="${empty completed}">
+				  <tr><td colspan="4" class="text-center text-muted py-4">No completed jobs yet.</td></tr>
+				</c:if>
+
               </tbody>
             </table>
           </div>
@@ -221,6 +238,41 @@
       </div>
     </div>
   </footer>
+</div>
+<!-- Review Modal -->
+<div class="modal fade" id="reviewModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <form class="modal-content" method="post" action="${pageContext.request.contextPath}/client/reviews/create">
+      <div class="modal-header">
+        <h5 class="modal-title"><i class="bi bi-star-half me-1"></i> Review Worker</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" name="job_id" id="rvJobId">
+        <input type="hidden" name="rating" id="rvRating" value="5">
+
+        <div class="mb-2 small text-muted" id="rvJobTitle"></div>
+        <div class="mb-3">
+          <div class="d-flex gap-1 fs-4 text-warning" id="rvStars" role="radiogroup" aria-label="Rating">
+            <i class="bi bi-star-fill" data-v="1"></i>
+            <i class="bi bi-star-fill" data-v="2"></i>
+            <i class="bi bi-star-fill" data-v="3"></i>
+            <i class="bi bi-star-fill" data-v="4"></i>
+            <i class="bi bi-star-fill" data-v="5"></i>
+          </div>
+          <div class="small text-muted">Click to rate from 1 to 5 stars.</div>
+        </div>
+
+        <label class="form-label">Comment (optional)</label>
+        <textarea class="form-control" name="comment" rows="3" maxlength="500"
+                  placeholder="Share how the job went..."></textarea>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary"><i class="bi bi-send me-1"></i>Submit Review</button>
+        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+      </div>
+    </form>
+  </div>
 </div>
 
 <!-- Wage Estimator Modal -->
@@ -414,7 +466,33 @@
     }
   });
 </script>
+<script>
+  // open modal with context
+  document.querySelectorAll('.reviewBtn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.getElementById('rvJobId').value = btn.dataset.job;
+      document.getElementById('rvRating').value = 5;
+      document.getElementById('rvJobTitle').textContent =
+        'Job: ' + btn.dataset.title + ' • Worker: ' + btn.dataset.workername;
 
+      // reset stars to 5
+      const stars = document.querySelectorAll('#rvStars i');
+      stars.forEach((s,i)=> s.className = 'bi ' + (i<5 ? 'bi-star-fill' : 'bi-star'));
+
+      new bootstrap.Modal(document.getElementById('reviewModal')).show();
+    });
+  });
+
+  // star rating interactions
+  const rvRating = document.getElementById('rvRating');
+  document.getElementById('rvStars').addEventListener('click', e => {
+    const v = e.target.dataset.v;
+    if (!v) return;
+    rvRating.value = v;
+    const stars = Array.from(document.querySelectorAll('#rvStars i'));
+    stars.forEach((s,i)=> s.className = 'bi ' + (i < v ? 'bi-star-fill' : 'bi-star'));
+  });
+</script>
 
 </body>
 </html>

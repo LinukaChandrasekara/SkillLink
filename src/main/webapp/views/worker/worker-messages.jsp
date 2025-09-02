@@ -17,7 +17,7 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet"/>
   <style>
-    :root{ --primary:#4e73df; --light:#f5f6f8; }
+    :root{ --primary:#4e73df; --light:#DCDCDC; }
     body{ background:var(--light); }
     .topbar{ background:var(--primary); color:#fff; }
     .brand{ font-weight:800; font-size:1.35rem; }
@@ -28,9 +28,20 @@
     .rounded-outer{ background:#fff; border:1px solid #e9ecef; border-radius:1rem; }
     .avatar{ width:38px; height:38px; border-radius:50%; object-fit:cover; background:#e9ecef; }
     .conv-item{ padding:.6rem .7rem; border-radius:.7rem; cursor:pointer; }
+    .conv-item .flex-grow-1 { min-width: 0; }
     .conv-item.active{ background:#eef2ff; border:1px solid #dfe4ff; }
     .conv-name{ font-weight:600; }
-    .conv-last{ font-size:.82rem; color:#6c757d; }
+    .conv-name.truncate {
+ 	 overflow: hidden;
+ 	 text-overflow: ellipsis;
+  	 white-space: nowrap;}
+	.conv-last {
+	  display: block;
+	  overflow: hidden;
+	  text-overflow: ellipsis;
+	  white-space: nowrap;
+	  max-width: 100%;
+	}
     .badge-unread{ background:#ff4757; }
     .chat-wrap{ display:flex; flex-direction:column; height:60vh; }
     .chat-body{ flex:1 1 auto; overflow:auto; padding:1rem; background:#fafbff; border:1px solid #eef2ff; border-radius:.75rem; }
@@ -92,12 +103,15 @@
                 <div class="d-flex align-items-center gap-2">
                   <img class="avatar" src="${pageContext.request.contextPath}/media/user/profile?userId=${cvo.otherUserId}" alt="">
                   <div class="flex-grow-1">
-                    <div class="d-flex align-items-center justify-content-between">
-                      <div class="conv-name"><c:out value="${cvo.otherFullName}"/></div>
-                      <c:if test="${cvo.unreadCount > 0}">
-                        <span class="badge badge-unread">${cvo.unreadCount}</span>
-                      </c:if>
-                    </div>
+					<div class="d-flex align-items-center justify-content-between">
+					  <!-- add flex-grow-1 + truncate + a tiny right margin -->
+					  <div class="conv-name truncate flex-grow-1 me-2">
+					    <c:out value="${cvo.otherFullName}"/>
+					  </div>
+					  <c:if test="${cvo.unreadCount > 0}">
+					    <span class="badge badge-unread">${cvo.unreadCount}</span>
+					  </c:if>
+					</div>
                     <div class="conv-last text-truncate"><c:out value="${cvo.lastMessageText}"/></div>
                   </div>
                 </div>

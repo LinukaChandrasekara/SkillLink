@@ -3,7 +3,8 @@
 <%
     // Optional: preselect tab via ?role=worker|client
     String roleParam = request.getParameter("role");
-    String defaultRole = (roleParam == null || (!roleParam.equals("worker") && !roleParam.equals("client"))) ? "worker" : roleParam;
+    String defaultRole = (roleParam == null || (!"worker".equals(roleParam) && !"client".equals(roleParam)))
+        ? "worker" : roleParam;
 %>
 <!DOCTYPE html>
 <html lang="en">
@@ -12,76 +13,159 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>SkillLink | Register</title>
 
-  <!-- Bootstrap 5 + Font Awesome (match login) -->
+  <!-- Bootstrap 5 + Font Awesome -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-  <!-- Same theme as login -->
   <style>
-    :root {
-      --primary-color: #4e73df;
-      --secondary-color: #1cc88a;
-      --dark-color: #5a5c69;
-      --light-color: #f8f9fc;
+    :root{
+      --primary-color:#4e73df;
+      --secondary-color:#1cc88a;
+      --dark-color:#5a5c69;
+      --light-color:#f8f9fc;
     }
-    body {
-      background-color: var(--light-color);
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
+
+    /* === Animated Background Shell (same system as login, fixed to always show) === */
+    html,body{height:100%;}
+    body{margin:0; background:#f8f9fc;}
+
+    .auth-shell{
+      min-height:100vh;
+      display:grid;
+      place-items:center;
+      position:relative;
+      isolation:isolate;       /* ensures our background sits behind the card reliably */
+      overflow:hidden;
+      background:#f8f9fc;
     }
-    /* Reuse login container look; widen for registration forms */
-    .login-container {
-      max-width: 980px; /* wider than login for two rich forms */
-      width: 100%;
-      margin: 24px auto;
-      box-shadow: 0 0.15rem 1.75rem 0 rgba(58,59,69,0.15);
-      border-radius: 0.35rem;
-      overflow: hidden;
-      background: #fff;
+
+    .bg-animated{
+      position:absolute; inset:0;
+      z-index:0; /* sits behind blobs and dots (and card above them) */
+      background:
+        radial-gradient(1200px 800px at 10% 0%, rgba(255,255,255,0.15), transparent 60%),
+        radial-gradient(900px 600px at 90% 100%, rgba(255,255,255,0.08), transparent 60%),
+        linear-gradient(120deg, #4e73df, #6c8efb, #8a6cff);
+      background-size:200% 200%;
+      animation: meshShift 18s ease-in-out infinite;
+      filter: saturate(1.05);
     }
-    .login-header {
-      background-color: var(--primary-color);
-      color: #fff;
-      padding: 1.25rem 1.5rem;
-      text-align: center;
+
+    .orb{
+      position:absolute;
+      width:42vmax; height:42vmax; border-radius:50%;
+      pointer-events:none;
+      filter: blur(40px) saturate(1.2);
+      mix-blend-mode: screen;
+      opacity:.35;
+      z-index:1;
     }
-    .login-body {
-      padding: 1.25rem;
+    .orb--blue{ background:radial-gradient(circle at 30% 30%, #6c8efb, transparent 55%); top:-12vmax; left:-14vmax; animation: float1 22s ease-in-out infinite; }
+    .orb--teal{ background:radial-gradient(circle at 60% 40%, #2dd4bf, transparent 55%); bottom:-14vmax; right:-16vmax; animation: float2 26s ease-in-out infinite; }
+    .orb--vio { background:radial-gradient(circle at 50% 50%, #8a6cff, transparent 55%); top:50%; left:60%; transform:translate(-50%,-50%); animation: float3 28s ease-in-out infinite; }
+
+    /* Bigger animated dot grid */
+    .bg-dots{
+      position:absolute; inset:0;
+      z-index:2;
+      opacity:.28;
+      /* bigger dots: increase the first length (radius) and spacing via background-size */
+      background-image: radial-gradient(rgba(255,255,255,.55) 2.2px, transparent 2.2px);
+      background-size: 34px 34px;           /* increase for chunkier dots */
+      animation: drift 60s linear infinite;
     }
-    .form-control:focus, .form-select:focus {
-      border-color: var(--primary-color);
-      box-shadow: 0 0 0 0.2rem rgba(78,115,223,0.25);
+
+    /* Card sits above all background layers */
+    .auth-card{ position:relative; z-index:3; }
+
+    /* === Registration card (keeps your existing look) === */
+    .login-container{
+      max-width:980px;
+      width:100%;
+      margin:24px auto;
+      box-shadow:0 0.15rem 1.75rem 0 rgba(58,59,69,.15);
+      border-radius:.35rem;
+      overflow:hidden;
+      background:#fff;
     }
-    .btn-primary {
-      background-color: var(--primary-color);
-      border-color: var(--primary-color);
+    .login-header{
+      background-color:var(--primary-color);
+      color:#fff;
+      padding:1.25rem 1.5rem;
+      text-align:center;
     }
-    .btn-primary:hover {
-      background-color: #2e59d9;
-      border-color: #2653d4;
+    .login-body{ padding:1.25rem; }
+
+    .form-control:focus, .form-select:focus{
+      border-color:var(--primary-color);
+      box-shadow:0 0 0 .2rem rgba(78,115,223,.25);
     }
-    .avatar-preview {
-      width: 84px; height: 84px; border-radius: .5rem;
-      background: #f1f3f6; background-position: center; background-size: cover;
-      border: 1px dashed #ced4da;
+    .btn-primary{
+      background-color:var(--primary-color);
+      border-color:var(--primary-color);
     }
-    .help-text { font-size: .875rem; color: #6c757d; }
-    .badge-required { color: var(--primary-color); }
-    .tab-pill .nav-link.active { background: var(--primary-color); }
+    .btn-primary:hover{
+      background-color:#2e59d9;
+      border-color:#2653d4;
+    }
+
+    .avatar-preview{
+      width:84px; height:84px; border-radius:.5rem;
+      background:#f1f3f6 center/cover no-repeat;
+      border:1px dashed #ced4da;
+    }
+    .help-text{ font-size:.875rem; color:#6c757d; }
+    .badge-required{ color:var(--primary-color); }
+    .tab-pill .nav-link.active{ background:var(--primary-color); }
+
+    /* Keyframes */
+    @keyframes meshShift{
+      0%{background-position:0% 50%}
+      50%{background-position:100% 50%}
+      100%{background-position:0% 50%}
+    }
+    @keyframes float1{
+      0%,100%{transform:translate(0,0) scale(1)}
+      50%{transform:translate(4vmax,2vmax) scale(1.05)}
+    }
+    @keyframes float2{
+      0%,100%{transform:translate(0,0) scale(1.05)}
+      50%{transform:translate(-5vmax,3vmax) scale(1)}
+    }
+    @keyframes float3{
+      0%,100%{transform:translate(-50%,-50%) scale(1)}
+      50%{transform:translate(-48%,-52%) scale(1.06)}
+    }
+    @keyframes drift{
+      0%{background-position:0 0; transform: rotate(0deg) scale(1)}
+      100%{background-position:1000px 600px; transform: rotate(0.01turn) scale(1.02)}
+    }
+
+    /* Respect user “reduce motion” */
+    @media (prefers-reduced-motion: reduce){
+      .bg-animated, .orb, .bg-dots{ animation:none !important; }
+    }
   </style>
 </head>
 <body>
-  <div class="container">
-    <div class="login-container">
-      <!-- Header (same visual as login) -->
+  <div class="auth-shell">
+    <!-- Animated background layers -->
+    <div class="bg-animated"></div>
+    <div class="orb orb--blue"></div>
+    <div class="orb orb--teal"></div>
+    <div class="orb orb--vio"></div>
+    <div class="bg-dots"></div>
+
+    <!-- Registration card -->
+    <div class="auth-card login-container">
+      <!-- Header -->
       <div class="login-header">
         <h2 class="mb-0"><i class="fas fa-hands-helping me-2"></i> SkillLink</h2>
         <p class="mb-0">Create your account</p>
       </div>
 
       <div class="login-body">
-        <!-- Alerts (scriptlet style to match your login) -->
+        <!-- Alerts -->
         <% if (request.getParameter("error") != null) { %>
           <div class="alert alert-danger alert-dismissible fade show" role="alert">
             <i class="fas fa-exclamation-circle me-2"></i> <%= request.getParameter("error") %>
@@ -328,7 +412,7 @@
           </div>
         </div>
 
-        <!-- Footer note + link to login -->
+        <!-- Footer note + link to login + modals links -->
         <div class="alert alert-light border d-flex align-items-center mt-3 mb-2" role="alert">
           <i class="fa-solid fa-shield-check text-primary me-2"></i>
           Admins review ID photos for security. Until approved, your account shows as <strong>Unverified</strong>.
@@ -338,9 +422,160 @@
             <a href="login.jsp" class="text-decoration-none">Back to login</a>
           </p>
           <p class="small text-muted mb-0">
-            By registering, you agree to our <a href="#" class="text-decoration-none">Terms</a> and
-            <a href="#" class="text-decoration-none">Privacy Policy</a>.
+            By registering, you agree to our
+            <a href="#" class="text-decoration-none" data-bs-toggle="modal" data-bs-target="#termsModal">Terms of Service</a>
+            and
+            <a href="#" class="text-decoration-none" data-bs-toggle="modal" data-bs-target="#privacyModal">Privacy Policy</a>.
           </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TERMS OF SERVICE (scrollable modal) -->
+  <div class="modal fade" id="termsModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">SkillLink – Terms of Service</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p class="small text-muted mb-3">Effective date: 02 Sep 2025</p>
+
+          <h6>1) Overview</h6>
+          <p>SkillLink (“we”, “our”, “us”) is a marketplace that connects clients with skilled workers across Sri Lanka.
+             By creating an account or using the Platform, you agree to these Terms.</p>
+
+          <h6>2) Eligibility & Accounts</h6>
+          <ul>
+            <li>You must be at least 16 years old and capable of forming a binding contract.</li>
+            <li>Provide accurate information and keep your credentials secure.</li>
+            <li>We may require identity verification (e.g., NIC image) before unlocking certain features.</li>
+          </ul>
+
+          <h6>3) Roles on SkillLink</h6>
+          <ul>
+            <li><strong>Clients</strong> post jobs, communicate with workers, and close/complete jobs.</li>
+            <li><strong>Workers</strong> manage profiles, view approved jobs in their category, accept offers, and message clients.</li>
+            <li><strong>Admins</strong> review verifications and job posts to keep the Platform safe.</li>
+          </ul>
+
+          <h6>4) Job Posts & Offers</h6>
+          <ul>
+            <li>Job posts may be reviewed by admins before workers can see them.</li>
+            <li>Budgets shown are indicative. SkillLink doesn’t process payments on your behalf.</li>
+            <li>When a worker accepts a job offer, the Platform notifies the client and opens/updates a conversation.</li>
+            <li>Clients can mark jobs closed/completed; after completion, clients may leave a review.</li>
+          </ul>
+
+          <h6>5) Messaging & Reviews</h6>
+          <ul>
+            <li>Use messaging respectfully. Don’t share illegal content or spam.</li>
+            <li>Reviews must be honest and non-abusive. We may remove content that violates these Terms.</li>
+          </ul>
+
+          <h6>6) Prohibited Activities</h6>
+          <ul>
+            <li>Impersonation, fraud, scraping, reverse engineering, or security probing.</li>
+            <li>Posting illegal, hateful, or pornographic content.</li>
+            <li>Sharing someone else’s personal data without consent.</li>
+          </ul>
+
+          <h6>7) Intellectual Property</h6>
+          <p>The Platform, logos, and software are our property. You’re given a limited, revocable, non-exclusive license to use the Platform in line with these Terms.</p>
+
+          <h6>8) Disclaimers & Liability</h6>
+          <ul>
+            <li>We provide a marketplace and do not guarantee job outcomes, worker performance, or client payments.</li>
+            <li>To the extent permitted by law, we’re not liable for indirect or consequential damages.</li>
+          </ul>
+
+          <h6>9) Suspension & Termination</h6>
+          <p>We may suspend or terminate accounts that violate these Terms or create risk for other users or the Platform.</p>
+
+          <h6>10) Changes</h6>
+          <p>We may update these Terms. We’ll post the new version with an effective date. Your continued use means you accept the changes.</p>
+
+          <h6>11) Governing Law & Disputes</h6>
+          <p>These Terms are governed by the laws of Sri Lanka. Disputes will be resolved in courts of competent jurisdiction in Sri Lanka.</p>
+
+          <h6>12) Contact</h6>
+          <p class="mb-0">Questions? Email <a href="mailto:support@skilllink.lk">support@skilllink.lk</a>.</p>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PRIVACY POLICY (scrollable modal) -->
+  <div class="modal fade" id="privacyModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">SkillLink – Privacy Policy</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p class="small text-muted mb-3">Effective date: 02 Sep 2025</p>
+
+          <h6>1) What this Policy Covers</h6>
+          <p>This explains how we collect, use, share, and protect your information when you use SkillLink’s Platform.</p>
+
+          <h6>2) Data We Collect</h6>
+          <ul>
+            <li><strong>Account details:</strong> name, username, email, phone, age, address, bio, profile picture.</li>
+            <li><strong>Identity verification:</strong> NIC/ID image and status (unverified, pending, verified, denied).</li>
+            <li><strong>Platform activity:</strong> job posts, budgets, categories, offers/acceptance, job status, reviews and ratings.</li>
+            <li><strong>Messages:</strong> conversation metadata and content you send/receive.</li>
+            <li><strong>Device & usage:</strong> logs and cookies for security and performance.</li>
+          </ul>
+
+          <h6>3) How We Use Your Data</h6>
+          <ul>
+            <li>To operate the Platform (profiles, jobs, messaging, reviews).</li>
+            <li>To verify users and protect against fraud/spam.</li>
+            <li>To improve features, analytics, and safety.</li>
+            <li>To communicate important updates and respond to support requests.</li>
+          </ul>
+
+          <h6>4) Sharing</h6>
+          <ul>
+            <li><strong>With other users:</strong> we share only what’s needed (e.g., your name/profile for jobs or messaging).</li>
+            <li><strong>With admins:</strong> to review verifications and job posts.</li>
+            <li><strong>With service providers:</strong> hosting/analytics/security under appropriate safeguards.</li>
+            <li><strong>Legal:</strong> if required by law or to protect rights and safety.</li>
+          </ul>
+
+          <h6>5) Cookies & Similar Technologies</h6>
+          <p>We use cookies for session management, security, and analytics. You can control cookies in your browser, but some features may not work properly without them.</p>
+
+          <h6>6) Data Retention</h6>
+          <p>We retain information as needed to provide the service and meet legal obligations. ID photos are retained only as long as needed for verification and audit.</p>
+
+          <h6>7) Security</h6>
+          <p>We take reasonable measures to protect your data. No method is 100% secure—use strong passwords and keep them confidential.</p>
+
+          <h6>8) Your Rights</h6>
+          <ul>
+            <li>Access, correct, or delete your information (subject to legal exceptions).</li>
+            <li>Object to or restrict certain processing; request a copy of your data.</li>
+            <li>To exercise these rights, contact <a href="mailto:support@skilllink.lk">support@skilllink.lk</a>.</li>
+          </ul>
+
+          <h6>9) Children</h6>
+          <p>The Platform isn’t intended for children under 16. If you believe a minor has provided data, contact us to remove it.</p>
+
+          <h6>10) Changes</h6>
+          <p>We may update this Policy and post the new effective date. Continued use means you accept the changes.</p>
+
+          <h6>11) Contact</h6>
+          <p class="mb-0">Questions or requests: <a href="mailto:support@skilllink.lk">support@skilllink.lk</a>.</p>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
         </div>
       </div>
     </div>

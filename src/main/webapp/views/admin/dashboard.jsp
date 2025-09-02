@@ -21,7 +21,7 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet"/>
 
   <style>
-    :root{ --primary:#4e73df; --light:#f5f6f8; }
+    :root{ --primary:#4e73df; --light:#DCDCDC; }
     body{ background:var(--light); }
     .app{ min-height:100vh; }
     .topbar{ background:var(--primary); color:#fff; }

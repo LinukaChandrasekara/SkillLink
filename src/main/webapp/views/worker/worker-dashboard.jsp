@@ -22,7 +22,7 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet"/>
   <style>
-    :root{ --primary:#4e73df; --light:#f5f6f8; --cardHead:#2856ea; --amber:#f59e0b; }
+    :root{ --primary:#4e73df; --light:#DCDCDC; --cardHead:#2856ea; --amber:#f59e0b; }
     body{ background:var(--light); }
     .topbar{ background:var(--primary); color:#fff; }
     .brand{ font-weight:800; font-size:1.35rem; }
@@ -45,10 +45,10 @@
     .stat{ border:1px solid #e9ecef; border-radius:1rem; background:#fff; }
 
     /* Stars (bigger & clearer) */
-    .rating-stars{ font-size:1.4rem; letter-spacing:1px; }
-    .rating-stars .filled{ color:var(--amber); }
-    .rating-stars .empty{ color:#d9d9d9; }
-
+	.rating-stars{ font-size:2.1rem; letter-spacing:1px; line-height:1; }
+	.rating-stars .filled{ color:var(--amber); }
+	.rating-stars .empty{ color:#d9d9d9; }
+	.rating-count{ font-size:.875rem; color:#6c757d; }
     /* Offer card like screenshot */
     .offer-card{ border:1px solid #e9ecef; border-radius:1rem; overflow:hidden; }
     .offer-head{ background:var(--cardHead); color:#fff; padding:.6rem .9rem; font-weight:700; }
@@ -148,12 +148,14 @@
             <c:out value="${sessionScope.authUser.bio}"/>
           </div>
 
-          <div class="mb-3 rating-stars">
-            <c:forEach var="i" begin="1" end="5">
-              <span class="${i <= ratingRounded ? 'filled' : 'empty'}">★</span>
-            </c:forEach>
-            <span class="small text-muted ms-1">(${ratingCount} reviews)</span>
-          </div>
+			<div class="mb-2">
+			  <div class="rating-stars">
+			    <c:forEach var="i" begin="1" end="5">
+			      <span class="${i <= ratingRounded ? 'filled' : 'empty'}">★</span>
+			    </c:forEach>
+			  </div>
+			  <div class="rating-count mt-1">(${ratingCount} reviews)</div>
+			</div>
 
           <a class="btn btn-outline-primary w-100" href="${pageContext.request.contextPath}/worker/profile">
             <i class="bi bi-pencil-square me-1"></i> Edit profile

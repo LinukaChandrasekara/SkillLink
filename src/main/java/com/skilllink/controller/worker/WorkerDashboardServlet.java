@@ -4,6 +4,7 @@ import com.skilllink.dao.JobPostDAO;
 import com.skilllink.dao.ReviewDAO;
 import com.skilllink.dao.UserDAO;
 import com.skilllink.dao.WorkerDAO;
+import com.skilllink.dao.dto.RecentReview;
 import com.skilllink.dao.jdbc.JdbcJobPostDAO;
 import com.skilllink.dao.jdbc.JdbcReviewDAO;
 import com.skilllink.dao.jdbc.JdbcUserDAO;
@@ -71,6 +72,10 @@ public class WorkerDashboardServlet extends HttpServlet {
                 (workerCatId == null) ? Collections.emptyList()
                                       : jobPostDAO.listApprovedByCategory(workerCatId, 9); // newest first, limit 9
         req.setAttribute("matchingJobs", matching);
+        
+        // NEW: recent reviews from clients for this worker (limit 5)
+        List<RecentReview> recent = reviewDAO.listRecentForWorker(workerId, 5);
+        req.setAttribute("recentReviews", recent);
 
         // (Optional: keep a legacy attribute if your JSPs already reference "offers")
         req.setAttribute("offers", matching);
