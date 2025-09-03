@@ -179,7 +179,7 @@
                 <div class="fw-bold">Hourly Wage Estimator</div>
                 <div class="small text-muted">A machine-learning model that predicts a fair hourly pay range for a job using role, skills, location and experience.</div>
               </div>
-                <a class="btn btn-primary" href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#wageEstimatorModal">To the Model<i class="bi bi-arrow-right-short ms-1"></i></a>
+            <a class="btn btn-primary" href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#wageEstimatorModal">Try</a>
             </div>
           </div>
         </div>

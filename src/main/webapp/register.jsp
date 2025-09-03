@@ -431,6 +431,7 @@
       </div>
     </div>
   </div>
+<jsp:include page="/fragments/bot-widget.jsp"/>
 
   <!-- TERMS OF SERVICE (scrollable modal) -->
   <div class="modal fade" id="termsModal" tabindex="-1" aria-hidden="true">

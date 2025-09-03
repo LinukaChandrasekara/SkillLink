@@ -150,7 +150,7 @@
             skills, location, experience, and other available details.
           </p>
         </div>
-            <a class="btn btn-primary" href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#wageEstimatorModal">To the Model<i class="bi bi-arrow-right-short ms-1"></i>
+            <a class="btn btn-primary" href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#wageEstimatorModal">Try<i class="bi bi-arrow-right-short ms-1"></i>
         </a>
       </div>
     </div>
