@@ -29,7 +29,7 @@
     .rounded-outer{ background:#fff; border:1px solid #e9ecef; border-radius:1rem; }
     .footer{ background:var(--primary); color:#fff; }
     .contact-icon{ width:36px; height:36px; display:inline-flex; align-items:center; justify-content:center; background:#fff; color:#0d6efd; border-radius:50%; }
-    .avatar{ width:40px; height:40px; border-radius:50%; object-fit:cover; background:#e9ecef; }
+    .avatar{ width:64px; height:64px; border-radius:50%; border:3px solid rgba(255,255,255,.5); object-fit:cover; background:#e9ecef; }
     .left-pane{ height: 65vh; overflow-y:auto; }
     .right-pane{ height: 65vh; display:flex; flex-direction:column; }
     .chat-scroll{ flex:1; overflow-y:auto; }
@@ -54,16 +54,12 @@
           <div class="brand">Admin Dashboard - SkillLink</div>
         </div>
         <div class="d-flex align-items-center gap-3 mt-3 mt-lg-0">
-          <img class="avatar"
-               src="${pageContext.request.contextPath}/media/user/profile?userId=${sessionScope.authUser.userId}"
-               alt="Profile">
+		<img class="avatar" src="${pageContext.request.contextPath}/views/admin/Admin.jpg" alt="Profile">
           <div class="text-end">
             <div class="fw-bold"><c:out value="${sessionScope.authUser.fullName}"/></div>
             <div class="small opacity-75">Administrator</div>
           </div>
-          <a class="btn btn-logout" href="${pageContext.request.contextPath}/auth/logout">
-            <i class="bi bi-box-arrow-right me-1"></i> Logout
-          </a>
+
         </div>
       </div>
     </div>
@@ -82,6 +78,9 @@
           <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#startModal">
             <i class="bi bi-chat-dots me-1"></i> New chat
           </button>
+                    <a class="btn btn-logout" href="${pageContext.request.contextPath}/auth/logout">
+            <i class="bi bi-box-arrow-right me-1"></i> Logout
+          </a>
         </div>
       </div>
     </div>

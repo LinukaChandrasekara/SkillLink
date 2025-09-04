@@ -39,6 +39,20 @@
     .status-closed{  background:#e2e3e5; color:#41464b; }
     .status-completed{ background:#cfe2ff; color:#084298; }
     .footer{ background:var(--primary); color:#fff; }
+html, body {
+  height: 100%;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  flex: 1 0 auto; /* Allows main to grow and push footer */
+}
+
+footer.footer {
+  flex-shrink: 0;
+}
     .contact-icon{ width:36px; height:36px; display:inline-flex; align-items:center; justify-content:center; background:#fff; color:#0d6efd; border-radius:50%; }
   </style>
 </head>
@@ -271,9 +285,9 @@
   </div>
 </div>
 
-<footer class="footer mt-4">
+<footer class="footer mt-auto">
   <div class="container-fluid px-3 px-md-4 py-4">
-    <div class="row g-4">
+    <div class="row g-4 align-items-start">
       <div class="col-12 col-md-4">
         <h6>Quick Links</h6>
         <div class="d-flex flex-column gap-1">

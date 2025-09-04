@@ -28,12 +28,22 @@
     .btn-logout{ background:#dc3545; border-color:#dc3545; color:#fff; }
 
     .wrap{ background:#fff; border:1px solid #e9ecef; border-radius:1rem; min-height:460px; }
-    .side{ border-right:1px solid #e9ecef; max-width:340px; width:100%; }
+    .side{ border-right:1px solid #e9ecef; max-width:340px; width:100%; overflow-y:auto; }
     .conv-item{ padding:.6rem .75rem; border-radius:.75rem; cursor:pointer; }
     .conv-item.active, .conv-item:hover{ background:#f1f4ff; }
     .conv-title{ font-weight:600; }
-    .avatar{ width:40px; height:40px; border-radius:50%; object-fit:cover; background:#e9ecef; }
+    .avatar{ width:64px; height:64px; border-radius:50%; border:3px solid rgba(255,255,255,.5); object-fit:cover; background:#e9ecef; }
+    /* smaller avatar on the left list to give text more room */
+    .avatar-sm{ width:42px; height:42px; border-radius:50%; object-fit:cover; background:#e9ecef; }
+
     .badge-unread{ background:#2856ea; }
+
+    /* === CRITICAL FIX FOR PREVIEW OVERFLOW === */
+    .conv-info{ min-width:0; } /* allow flex child to shrink */
+    .conv-last{
+      font-size:.83rem; color:#6c757d;
+      white-space:nowrap; overflow:hidden; text-overflow:ellipsis; display:block; max-width:100%;
+    }
 
     .chat{ display:flex; flex-direction:column; height:100%; }
     .chat-head{ padding: .8rem 1rem; border-bottom:1px solid #e9ecef; }
@@ -57,17 +67,21 @@
         <div class="fw-bold"><c:out value="${sessionScope.authUser.fullName}"/></div>
         <div class="small opacity-75">Client</div>
       </div>
-      <a class="btn btn-logout" href="${pageContext.request.contextPath}/auth/logout"><i class="bi bi-box-arrow-right me-1"></i>Logout</a>
     </div>
   </div>
   <div class="nav-tabs-row">
-    <div class="container-fluid px-3 px-md-4 py-2">
+    <div class="container-fluid px-3 px-md-4 py-2 d-flex align-items-center">
       <ul class="nav">
         <li class="nav-item"><a class="nav-link" href="${pageContext.request.contextPath}/client/dashboard">Dashboard</a></li>
         <li class="nav-item"><a class="nav-link" href="${pageContext.request.contextPath}/client/profile">Manage Profile</a></li>
         <li class="nav-item"><a class="nav-link" href="${pageContext.request.contextPath}/client/jobs">Job Post Management</a></li>
         <li class="nav-item"><a class="nav-link active" href="${pageContext.request.contextPath}/client/messages">Messages</a></li>
       </ul>
+      <div class="ms-auto">
+        <a class="btn btn-logout" href="${pageContext.request.contextPath}/auth/logout">
+          <i class="bi bi-box-arrow-right me-1"></i> Logout
+        </a>
+      </div>
     </div>
   </div>
 </header>
@@ -90,10 +104,11 @@
            href="${pageContext.request.contextPath}/client/messages?cid=${c.conversationId}">
           <div class="conv-item ${c.conversationId==cid ? 'active' : ''}">
             <div class="d-flex align-items-center gap-2">
-              <img class="avatar" src="${pageContext.request.contextPath}/media/user/profile?userId=${c.otherUserId}" alt="">
-              <div class="flex-grow-1">
+              <img class="avatar-sm" src="${pageContext.request.contextPath}/media/user/profile?userId=${c.otherUserId}" alt="">
+              <!-- conv-info wrapper must have min-width:0 for ellipsis to work in flex -->
+              <div class="conv-info flex-grow-1">
                 <div class="conv-title"><c:out value="${c.otherFullName}"/></div>
-                <div class="small text-muted text-truncate"><c:out value="${c.lastSnippet}"/></div>
+                <div class="conv-last"><c:out value="${c.lastSnippet}"/></div>
               </div>
               <c:if test="${c.unreadCount > 0}">
                 <span class="badge badge-unread">${c.unreadCount}</span>

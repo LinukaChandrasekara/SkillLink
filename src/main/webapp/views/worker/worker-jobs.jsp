@@ -28,7 +28,7 @@
     .nav-tabs-row .nav-link{ border:0; border-radius:.8rem; color:#333; }
     .nav-tabs-row .nav-link.active{ background:#eef2ff; color:#1f3bb3; border:1px solid #dfe4ff; }
     .btn-logout{ background:#dc3545; border-color:#dc3545; color:#fff; }
-    .avatar{ width:48px; height:48px; border-radius:50%; object-fit:cover; background:#e9ecef; }
+    .avatar{ width:64px; height:64px; border-radius:50%; border:3px solid rgba(255,255,255,.5); object-fit:cover; background:#e9ecef; }
     .card-offer{ border:1px solid #e9ecef; border-radius:1rem; overflow:hidden; }
     .card-offer .hdr{ background:#2856ea; color:#fff; font-weight:700; padding:.55rem .8rem; }
     .card-offer .body{ padding:.75rem .8rem; font-size:.95rem; }
@@ -180,9 +180,32 @@
 </main>
 
 <footer class="footer mt-auto">
-  <div class="container-fluid px-3 px-md-4 py-3 d-flex justify-content-between align-items-center flex-wrap">
-    <div class="small">SkillLink. Connecting skilled workers with local opportunities across Sri Lanka.</div>
-    <div class="small">&copy; <script>document.write(new Date().getFullYear())</script> Linuka Chandrasekara</div>
+  <div class="container-fluid px-3 px-md-4 py-4">
+    <div class="row g-4 align-items-start">
+      <div class="col-12 col-md-4">
+        <h6 class="mb-3">Quick Links</h6>
+        <div class="d-flex flex-column gap-1">
+          <a class="link-light text-decoration-none" href="${pageContext.request.contextPath}/worker/profile">Manage Profile</a>
+          <a class="link-light text-decoration-none" href="${pageContext.request.contextPath}/worker/dashboard#offers">Job Offers</a>
+          <a class="link-light text-decoration-none" href="${pageContext.request.contextPath}/worker/messages">Messages</a>
+        </div>
+      </div>
+      <div class="col-12 col-md-4 text-center">
+        <div class="fw-bold">SkillLink. Connecting skilled workers with local opportunities across Sri Lanka.</div>
+        <div class="small opacity-75 mt-2">&copy;
+          <script>document.write(new Date().getFullYear())</script> Linuka Chandrasekara
+        </div>
+      </div>
+      <div class="col-12 col-md-4">
+        <h6 class="mb-3">Contact Us</h6>
+        <div class="d-flex align-items-center gap-2">
+          <a class="contact-icon" href="#"><i class="bi bi-facebook"></i></a>
+          <a class="contact-icon" href="#"><i class="bi bi-twitter-x"></i></a>
+          <a class="contact-icon" href="#"><i class="bi bi-instagram"></i></a>
+          <a class="contact-icon" href="mailto:support@skilllink.lk"><i class="bi bi-envelope"></i></a>
+        </div>
+      </div>
+    </div>
   </div>
 </footer>
 

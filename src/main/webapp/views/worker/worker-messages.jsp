@@ -26,7 +26,7 @@
     .nav-tabs-row .nav-link.active{ background:#eef2ff; color:#1f3bb3; border:1px solid #dfe4ff; }
     .btn-logout{ background:#dc3545; border-color:#dc3545; color:#fff; }
     .rounded-outer{ background:#fff; border:1px solid #e9ecef; border-radius:1rem; }
-    .avatar{ width:38px; height:38px; border-radius:50%; object-fit:cover; background:#e9ecef; }
+    .avatar{ width:64px; height:64px; border-radius:50%; border:3px solid rgba(255,255,255,.5); object-fit:cover; background:#e9ecef; }
     .conv-item{ padding:.6rem .7rem; border-radius:.7rem; cursor:pointer; }
     .conv-item .flex-grow-1 { min-width: 0; }
     .conv-item.active{ background:#eef2ff; border:1px solid #dfe4ff; }
